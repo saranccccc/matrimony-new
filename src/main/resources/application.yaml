@@ -1,0 +1,21 @@
+server:
+  port: 9090
+spring:
+  application:
+    name: matrimony-app
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: Ambika@89
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none   # none | validate | update | create | create-drop
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
