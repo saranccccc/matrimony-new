@@ -4,6 +4,7 @@ import com.matrimony.auth.dto.LoginRequest;
 import com.matrimony.auth.entity.User;
 import com.matrimony.auth.entity.UserStatus;
 import com.matrimony.auth.repository.UserRepository;
+import com.matrimony.auth.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +17,7 @@ public class CredentialService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final JwtTokenProvider jwtTokenProvider;
 
     public void setCredentials(String userId, String username, String password) {
     // todo: password encryption at the backend itself
@@ -49,6 +50,6 @@ public class CredentialService {
             log.info("User login - user:{} invalid credentials",request.getUsername());
             throw new RuntimeException("Invalid credentials");
         }
-return "";
+        return jwtTokenProvider.generateToken(request.getUsername());
     }
 }
