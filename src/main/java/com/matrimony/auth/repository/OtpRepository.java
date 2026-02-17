@@ -1,12 +1,13 @@
 package com.matrimony.auth.repository;
 
-import com.matrimony.auth.entity.OtpVerification;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
+import com.matrimony.auth.entity.*;
 
-public interface OtpRepository extends JpaRepository<OtpVerification, Long> {
+public interface OtpRepository extends JpaRepository<OtpEntity, Long> {
 
-    Optional<OtpVerification> findTopByUserIdAndChannelOrderByOtpIdDesc(
-            String userId, String channel);
+    Optional<OtpEntity> findTopByUserIdAndChannelOrderByIdDesc(
+            String userId,
+            OtpChannel channel
+    );
 }

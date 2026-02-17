@@ -1,12 +1,14 @@
 package com.matrimony.auth.service;
 
 import com.matrimony.audit.service.AuditService;
-import com.matrimony.auth.entity.OtpVerification;
-import com.matrimony.auth.entity.User;
+
+import com.matrimony.auth.entity.*;
 import com.matrimony.auth.repository.OtpRepository;
 import com.matrimony.auth.repository.UserRepository;
+import com.matrimony.common.Event;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,66 +22,54 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuditService auditService;
     private final OtpRepository otpRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public String register(String name, String mobile, String email) {
+    public String register(String name, String mobile, String email, String password) {
         log.info("User registration starts for Name:{}, mobile:{}, email:{}", name, mobile, email);
         User user = new User();
         user.setUserId(UUID.randomUUID().toString());
         user.setFullName(name);
         user.setMobileNo(mobile);
         user.setEmail(email);
-        user.setStatus("PENDING");
-        auditService.log("USER", user.getUserId(),
-                "REGISTER", "PENDING");
+        user.setUserStatus(UserStatus.OTP_PENDING);
+        user.setPasswordHash(passwordEncoder.encode(password));
+        auditService.log("USER", user.getUserId(), Event.REGISTER.name(), UserStatus.OTP_PENDING.toString());
         userRepository.save(user);
-
+// todo : if uqinue index issue comes need to throw user already exists error
         auditService.log("USER", user.getUserId(),
                 "REGISTER", "SUCCESS");
-        sendOtp(user.getUserId(), "SMS");
+      //sendOtp(user.getUserId(), "SMS");
         log.info("User registration completed for Name:{}, mobile:{}, email:{} with userId:{}", name, mobile, email, user.getUserId());
         return user.getUserId();
     }
 
-    public void sendOtp(String userId, String channel) {
-        log.info("Sending OTP for user: {} by channel:{}", userId, channel);
-        OtpVerification otp = new OtpVerification();
-        otp.setUserId(userId);
-        otp.setChannel(channel);
-        // todo : dynamic opt creation
-        otp.setOtpCode("123456"); // later random
-        otp.setExpiryTime(LocalDateTime.now().plusMinutes(5));
-        otp.setVerified(false);
-        otpRepository.save(otp);
-        log.info("OTP sent for user: {} by channel:{}", userId, channel);
+
+    public void activateUserIfEligible(String userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
+
+        boolean smsVerified = otpRepository
+                .findTopByUserIdAndChannelOrderByIdDesc(userId, OtpChannel.SMS)
+                .map(o -> o.getStatus() == OtpStatus.VERIFIED)
+                .orElse(false);
+
+        boolean emailVerified = true;
+
+        if (user.getEmail() != null) {
+            emailVerified = otpRepository
+                    .findTopByUserIdAndChannelOrderByIdDesc(userId, OtpChannel.EMAIL)
+                    .map(o -> o.getStatus() == OtpStatus.VERIFIED)
+                    .orElse(false);
+        }
+
+        if (smsVerified && emailVerified) {
+            user.setUserStatus(UserStatus.ACTIVE);
+            userRepository.save(user);
+            log.info("User {} activated successfully", userId);
+        } else {
+            log.info("User {} not eligible for activation yet", userId);
+        }
     }
 
-    public void verifyOtp(String userId, String channel, String otpCode) {
-        log.info("Verifying OTP for user: {} by channel:{},otpCode{}", userId, channel, otpCode);
-        OtpVerification otp = otpRepository
-                .findTopByUserIdAndChannelOrderByOtpIdDesc(userId, channel)
-                .orElseThrow(() -> new RuntimeException("OTP not found"));
-
-        if (otp.isVerified()) {
-            log.info("OTP already verified for User:{}",userId);
-            throw new RuntimeException("OTP already verified");
-        }
-
-        if (otp.getExpiryTime().isBefore(LocalDateTime.now())) {
-            log.info("OTP expired for User:{}",userId);
-            throw new RuntimeException("OTP expired");
-        }
-
-        if (!otp.getOtpCode().equals(otpCode)) {
-            log.info("Invalid OTP for User:{}",userId);
-            throw new RuntimeException("Invalid OTP");
-        }
-
-        otp.setVerified(true);
-        otpRepository.save(otp);
-
-        User user = userRepository.findById(userId).orElseThrow();
-        user.setStatus("OTP_VERIFIED");
-        userRepository.save(user);
-        log.info("Verified OTP for user: {} by channel:{}", userId, channel);
-    }
 }
