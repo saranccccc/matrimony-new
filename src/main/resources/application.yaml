@@ -19,3 +19,8 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+
+otp:
+  length: 6
+  expiry-minutes: 5
+  maxAttempts: 3

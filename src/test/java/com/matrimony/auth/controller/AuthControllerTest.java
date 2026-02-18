@@ -1,26 +1,22 @@
 package com.matrimony.auth.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matrimony.auth.dto.RegisterRequest;
 import com.matrimony.auth.service.AuthService;
-import com.matrimony.auth.service.OtpService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.BDDMockito.given;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.ResourceUtils;
 
 import java.nio.file.Files;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthController.class)
 class AuthControllerTest {
@@ -39,7 +35,7 @@ class AuthControllerTest {
 
     @Test
     void shouldRegister() throws Exception {
-        given(authService.register(any(),any(),any())).willReturn("UserID");
+        given(authService.register(any(), any(), any())).willReturn("UserID");
         willDoNothing().given(otpService).generateOtp(any(), any());
 
         // Load JSON file from src/test/resources

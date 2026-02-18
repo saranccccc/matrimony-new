@@ -1,7 +1,13 @@
-package com.matrimony.auth.entity;
+package com.matrimony.common.entity;
 
+import com.matrimony.auth.entity.OtpChannel;
+import com.matrimony.auth.entity.OtpStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,5 +34,8 @@ public class OtpEntity {
     private OtpStatus status;
 
     private LocalDateTime expiresAt;
-    private boolean verified;
+
+    // ✅ NEW FIELDS (allowed addition)
+    private int attemptCount;
+    private LocalDateTime createdAt;
 }

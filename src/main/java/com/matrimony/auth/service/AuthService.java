@@ -1,17 +1,21 @@
 package com.matrimony.auth.service;
 
 import com.matrimony.audit.service.AuditService;
-
-import com.matrimony.auth.entity.*;
-import com.matrimony.auth.repository.OtpRepository;
+import com.matrimony.auth.entity.OtpChannel;
+import com.matrimony.auth.entity.OtpStatus;
+import com.matrimony.auth.entity.User;
+import com.matrimony.auth.entity.UserStatus;
+import com.matrimony.common.exception.CustomException;
+import com.matrimony.common.exception.ErrorCode;
+import com.matrimony.common.repository.OtpRepository;
 import com.matrimony.auth.repository.UserRepository;
 import com.matrimony.common.Event;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -31,6 +35,7 @@ public class AuthService {
         user.setFullName(name);
         user.setMobileNo(mobile);
         user.setEmail(email);
+        user.setUserName(mobile);
         user.setUserStatus(UserStatus.OTP_PENDING);
         user.setPasswordHash(passwordEncoder.encode(password));
         auditService.log("USER", user.getUserId(), Event.REGISTER.name(), UserStatus.OTP_PENDING.toString());
@@ -38,7 +43,7 @@ public class AuthService {
 // todo : if uqinue index issue comes need to throw user already exists error
         auditService.log("USER", user.getUserId(),
                 "REGISTER", "SUCCESS");
-      //sendOtp(user.getUserId(), "SMS");
+        //sendOtp(user.getUserId(), "SMS");
         log.info("User registration completed for Name:{}, mobile:{}, email:{} with userId:{}", name, mobile, email, user.getUserId());
         return user.getUserId();
     }
@@ -48,10 +53,18 @@ public class AuthService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
-
+        boolean pendingOtps =
+                otpRepository.existsByUserIdAndStatus(userId, OtpStatus.ACTIVE);
+        if (!pendingOtps) {
+            // ✅ All OTPs verified
+            log.info("User {} activated successfully", userId);
+            activateUser(userId);
+            return;
+        }
+        log.info("User {} not eligible for activation yet", userId);
         boolean smsVerified = otpRepository
                 .findTopByUserIdAndChannelOrderByIdDesc(userId, OtpChannel.SMS)
-                .map(o -> o.getStatus() == OtpStatus.VERIFIED)
+                .map(o -> o.getStatus() == OtpStatus.USED)
                 .orElse(false);
 
         boolean emailVerified = true;
@@ -59,7 +72,7 @@ public class AuthService {
         if (user.getEmail() != null) {
             emailVerified = otpRepository
                     .findTopByUserIdAndChannelOrderByIdDesc(userId, OtpChannel.EMAIL)
-                    .map(o -> o.getStatus() == OtpStatus.VERIFIED)
+                    .map(o -> o.getStatus() == OtpStatus.USED)
                     .orElse(false);
         }
 
@@ -72,4 +85,11 @@ public class AuthService {
         }
     }
 
+    @Transactional
+    public void activateUser(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        user.setUserStatus(UserStatus.ACTIVE);
+        userRepository.save(user);
+    }
 }

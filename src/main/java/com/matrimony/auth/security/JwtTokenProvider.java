@@ -32,7 +32,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 1))
                 .signWith(getSigningKey(), Jwts.SIG.HS256)
                 .compact();
     }
@@ -61,8 +61,6 @@ public class JwtTokenProvider {
             return false;
         }
     }
-
-
 
 
 }

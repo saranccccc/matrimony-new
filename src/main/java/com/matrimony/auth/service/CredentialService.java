@@ -5,6 +5,8 @@ import com.matrimony.auth.entity.User;
 import com.matrimony.auth.entity.UserStatus;
 import com.matrimony.auth.repository.UserRepository;
 import com.matrimony.auth.security.JwtTokenProvider;
+import com.matrimony.common.exception.CustomException;
+import com.matrimony.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +22,7 @@ public class CredentialService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public void setCredentials(String userId, String username, String password) {
-    // todo: password encryption at the backend itself
+        // todo: password encryption at the backend itself
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -31,24 +33,24 @@ public class CredentialService {
 
 
         userRepository.save(user);
-        log.info("Password is encrypted and saved for user:{}",userId);
+        log.info("Password is encrypted and saved for user:{}", userId);
     }
 
     public String login(LoginRequest request) {
-    log.info("User login starts for user:{},",request.getUsername());
+        log.info("User login starts for user:{},", request.getUsername());
         User user = userRepository.findByUserName(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (UserStatus.ACTIVE != user.getUserStatus()) {
-            log.info("User login - user:{} is not active",request.getUsername());
-            throw new RuntimeException("User not active");
+            log.info("User login - user:{} is not active", request.getUsername());
+            throw new CustomException(ErrorCode.USER_NOT_ACTIVE);
         }
 
         if (!passwordEncoder.matches(
                 request.getPassword(),
                 user.getPasswordHash())) {
-            log.info("User login - user:{} invalid credentials",request.getUsername());
-            throw new RuntimeException("Invalid credentials");
+            log.info("User login - user:{} invalid credentials", request.getUsername());
+            throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
         }
         return jwtTokenProvider.generateToken(request.getUsername());
     }

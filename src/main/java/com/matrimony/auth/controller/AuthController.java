@@ -2,10 +2,11 @@ package com.matrimony.auth.controller;
 
 import com.matrimony.auth.dto.OtpVerifyRequest;
 import com.matrimony.auth.dto.RegisterRequest;
-import com.matrimony.auth.entity.OtpStatus;
+import com.matrimony.auth.entity.OtpChannel;
 import com.matrimony.auth.service.AuthService;
 import com.matrimony.auth.service.CredentialService;
-import com.matrimony.auth.service.OtpService;
+import com.matrimony.auth.service.RegistrationService;
+import com.matrimony.common.otp.OtpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,26 +17,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    private final AuthService authService;
-    private final OtpService otpService;
-    private final CredentialService credentialService;
+    private final RegistrationService registrationService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req) {
-        String userId = authService.register(req.getFullName(), req.getMobileNo(), req.getEmail(), req.getPassword());
-        credentialService.setCredentials(userId,req.getMobileNo(),req.getPassword());
-        otpService.generateOtp(userId, req);
+        registrationService.registerUser(req);
         return ResponseEntity.ok("OTP sent");
     }
 
     @PostMapping("/verify-otp")
     public ResponseEntity<String> verifyOtp(@RequestBody OtpVerifyRequest request) {
         // todo: one more logic to receive both email and sms otp and allow user if mobile no alone verified. currently we are allowing if email given, email address should be verified.
-        otpService.verifyOtp(
-                request.getUserId(),
-                request.getChannel(),
-                request.getOtp());
-        authService.activateUserIfEligible(request.getUserId());
+        registrationService.verifyOtp(request);
         return ResponseEntity.ok("OTP Verified");
     }
 

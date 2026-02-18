@@ -12,4 +12,4 @@ public enum OtpChannel {
     private final String code;
     private final String description;
 
-    }
+}
