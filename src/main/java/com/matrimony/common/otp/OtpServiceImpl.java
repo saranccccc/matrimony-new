@@ -1,9 +1,9 @@
 package com.matrimony.common.otp;
 
 
-import com.matrimony.auth.entity.OtpChannel;
-import com.matrimony.auth.entity.OtpStatus;
+import com.matrimony.common.entity.OtpChannel;
 import com.matrimony.common.entity.OtpEntity;
+import com.matrimony.common.entity.OtpStatus;
 import com.matrimony.common.exception.CustomException;
 import com.matrimony.common.exception.ErrorCode;
 import com.matrimony.common.repository.OtpRepository;

@@ -1,6 +1,6 @@
 package com.matrimony.auth.dto;
 
-import com.matrimony.auth.entity.OtpChannel;
+import com.matrimony.common.entity.OtpChannel;
 import lombok.Data;
 
 @Data

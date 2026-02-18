@@ -1,7 +1,5 @@
 package com.matrimony.common.entity;
 
-import com.matrimony.auth.entity.OtpChannel;
-import com.matrimony.auth.entity.OtpStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

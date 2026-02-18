@@ -2,7 +2,7 @@ package com.matrimony.auth.service;
 
 import com.matrimony.auth.dto.OtpVerifyRequest;
 import com.matrimony.auth.dto.RegisterRequest;
-import com.matrimony.auth.entity.OtpChannel;
+import com.matrimony.common.entity.OtpChannel;
 import com.matrimony.common.otp.OtpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,9 +18,9 @@ public class RegistrationService {
     @Transactional
     public void registerUser(RegisterRequest req) {
         String userId = authService.register(req.getFullName(), req.getMobileNo(), req.getEmail(), req.getPassword());
-        otpService.generateAndSaveOtp(userId, OtpChannel.SMS,req.getMobileNo());
-        if(null != req.getEmail())
-        otpService.generateAndSaveOtp(userId, OtpChannel.EMAIL,req.getEmail());
+        otpService.generateAndSaveOtp(userId, OtpChannel.SMS, req.getMobileNo());
+        if (null != req.getEmail())
+            otpService.generateAndSaveOtp(userId, OtpChannel.EMAIL, req.getEmail());
     }
 
     public void verifyOtp(OtpVerifyRequest request) {

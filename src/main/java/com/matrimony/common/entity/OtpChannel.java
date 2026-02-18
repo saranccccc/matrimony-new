@@ -1,4 +1,4 @@
-package com.matrimony.auth.entity;
+package com.matrimony.common.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

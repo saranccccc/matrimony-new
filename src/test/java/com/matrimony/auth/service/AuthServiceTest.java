@@ -1,8 +1,8 @@
 package com.matrimony.auth.service;
 
 import com.matrimony.audit.service.AuditService;
-import com.matrimony.common.repository.OtpRepository;
 import com.matrimony.auth.repository.UserRepository;
+import com.matrimony.common.repository.OtpRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

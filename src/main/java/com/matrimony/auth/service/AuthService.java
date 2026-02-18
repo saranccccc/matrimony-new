@@ -1,16 +1,13 @@
 package com.matrimony.auth.service;
 
 import com.matrimony.audit.service.AuditService;
-import com.matrimony.auth.entity.OtpChannel;
-import com.matrimony.auth.entity.OtpStatus;
 import com.matrimony.auth.entity.User;
 import com.matrimony.auth.entity.UserStatus;
+import com.matrimony.auth.repository.UserRepository;
+import com.matrimony.common.Event;
 import com.matrimony.common.exception.CustomException;
 import com.matrimony.common.exception.ErrorCode;
 import com.matrimony.common.otp.OtpService;
-import com.matrimony.common.repository.OtpRepository;
-import com.matrimony.auth.repository.UserRepository;
-import com.matrimony.common.Event;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,7 +50,7 @@ public class AuthService {
     public void activateUserIfEligible(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
-        boolean pendingOtps =otpService.isOtpVerified(userId);
+        boolean pendingOtps = otpService.isOtpVerified(userId);
         if (!pendingOtps) {
             // ✅ All OTPs verified
             log.info("User {} activated successfully", userId);

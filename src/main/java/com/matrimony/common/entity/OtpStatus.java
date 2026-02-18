@@ -1,4 +1,4 @@
-package com.matrimony.auth.entity;
+package com.matrimony.common.entity;
 
 public enum OtpStatus {
 
@@ -7,7 +7,6 @@ public enum OtpStatus {
     ACTIVE,
     USED,
     BLOCKED,
-
 
 
 }

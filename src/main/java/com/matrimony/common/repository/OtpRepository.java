@@ -1,8 +1,8 @@
 package com.matrimony.common.repository;
 
-import com.matrimony.auth.entity.OtpChannel;
+import com.matrimony.common.entity.OtpChannel;
 import com.matrimony.common.entity.OtpEntity;
-import com.matrimony.auth.entity.OtpStatus;
+import com.matrimony.common.entity.OtpStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
