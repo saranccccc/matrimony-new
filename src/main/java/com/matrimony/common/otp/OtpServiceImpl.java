@@ -2,11 +2,11 @@ package com.matrimony.common.otp;
 
 
 import com.matrimony.auth.entity.OtpChannel;
-import com.matrimony.common.entity.OtpEntity;
 import com.matrimony.auth.entity.OtpStatus;
-import com.matrimony.common.repository.OtpRepository;
+import com.matrimony.common.entity.OtpEntity;
 import com.matrimony.common.exception.CustomException;
 import com.matrimony.common.exception.ErrorCode;
+import com.matrimony.common.repository.OtpRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,14 +49,14 @@ public class OtpServiceImpl implements OtpService {
         otpRepository.save(entity);
 
         // TODO: Integrate SMS provider here
-        log.info("Generated SMS OTP: {} for userId:{}", rawOtp,userId);
+        log.info("OTP Generated ----  UserId:{} Channel:{} OTP:{}", userId, OtpChannel, rawOtp);
     }
 
     @Transactional(noRollbackFor = CustomException.class)
     public void verifyOtp(String userId, OtpChannel channel, String enteredOtp) {
 
         OtpEntity otp = otpRepository.findTopByUserIdAndChannelAndStatusOrderByCreatedAtDesc(userId, channel, OtpStatus.ACTIVE)
-                    .orElseThrow(() -> new CustomException(ErrorCode.OTP_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.OTP_NOT_FOUND));
 
         // 1️⃣ Expiry check
         if (otp.getExpiresAt().isBefore(LocalDateTime.now())) {
@@ -93,5 +93,7 @@ public class OtpServiceImpl implements OtpService {
         otpRepository.save(otp);
     }
 
-
+    public boolean isOtpVerified(String userId) {
+        return otpRepository.existsByUserIdAndStatus(userId, OtpStatus.ACTIVE);
+    }
 }

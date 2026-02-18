@@ -2,11 +2,7 @@ package com.matrimony.auth.controller;
 
 import com.matrimony.auth.dto.OtpVerifyRequest;
 import com.matrimony.auth.dto.RegisterRequest;
-import com.matrimony.auth.entity.OtpChannel;
-import com.matrimony.auth.service.AuthService;
-import com.matrimony.auth.service.CredentialService;
 import com.matrimony.auth.service.RegistrationService;
-import com.matrimony.common.otp.OtpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

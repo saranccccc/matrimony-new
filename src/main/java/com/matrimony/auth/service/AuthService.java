@@ -7,6 +7,7 @@ import com.matrimony.auth.entity.User;
 import com.matrimony.auth.entity.UserStatus;
 import com.matrimony.common.exception.CustomException;
 import com.matrimony.common.exception.ErrorCode;
+import com.matrimony.common.otp.OtpService;
 import com.matrimony.common.repository.OtpRepository;
 import com.matrimony.auth.repository.UserRepository;
 import com.matrimony.common.Event;
@@ -25,7 +26,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final AuditService auditService;
-    private final OtpRepository otpRepository;
+    private final OtpService otpService;
     private final PasswordEncoder passwordEncoder;
 
     public String register(String name, String mobile, String email, String password) {
@@ -50,11 +51,9 @@ public class AuthService {
 
 
     public void activateUserIfEligible(String userId) {
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
-        boolean pendingOtps =
-                otpRepository.existsByUserIdAndStatus(userId, OtpStatus.ACTIVE);
+        boolean pendingOtps =otpService.isOtpVerified(userId);
         if (!pendingOtps) {
             // ✅ All OTPs verified
             log.info("User {} activated successfully", userId);
@@ -62,27 +61,6 @@ public class AuthService {
             return;
         }
         log.info("User {} not eligible for activation yet", userId);
-        boolean smsVerified = otpRepository
-                .findTopByUserIdAndChannelOrderByIdDesc(userId, OtpChannel.SMS)
-                .map(o -> o.getStatus() == OtpStatus.USED)
-                .orElse(false);
-
-        boolean emailVerified = true;
-
-        if (user.getEmail() != null) {
-            emailVerified = otpRepository
-                    .findTopByUserIdAndChannelOrderByIdDesc(userId, OtpChannel.EMAIL)
-                    .map(o -> o.getStatus() == OtpStatus.USED)
-                    .orElse(false);
-        }
-
-        if (smsVerified && emailVerified) {
-            user.setUserStatus(UserStatus.ACTIVE);
-            userRepository.save(user);
-            log.info("User {} activated successfully", userId);
-        } else {
-            log.info("User {} not eligible for activation yet", userId);
-        }
     }
 
     @Transactional
