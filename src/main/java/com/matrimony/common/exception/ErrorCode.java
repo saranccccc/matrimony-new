@@ -30,7 +30,15 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid JWT token"),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access denied"),
 
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
+    PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "Plan not found"),
+    CONTACT_LIMIT_EXHAUSTED(HttpStatus.BAD_REQUEST, "Contact limit exhausted"),
+
+
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment not found"),
+
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong")
+
+
 
     private final HttpStatus httpStatus;
     private final String message;
