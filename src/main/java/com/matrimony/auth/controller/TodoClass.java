@@ -33,4 +33,31 @@ public class TodoClass {
     //User → Preferences
     //User → Partner Expectations
 
+
+    // Contact Unlock Logic (Final Business Rule)
+    //
+    //When user tries to unlock contact:
+    //
+    //Step 1: Check active subscription
+    //
+    //If remainingContactViews > 0
+    //→ Deduct from subscription
+    //
+    //Else:
+    //
+    //Step 2: Check wallet
+    //
+    //If wallet balance ≥ required amount
+    //
+    //Pricing logic:
+    //
+    //If subscription ACTIVE but quota exhausted → cost = ₹100
+    //If no subscription → cost = ₹150
+    //
+    //
+    //Then:
+    //
+    //walletService.debitWallet(userId, cost,
+    //                          "CONTACT_UNLOCK", unlockId);
+
 }

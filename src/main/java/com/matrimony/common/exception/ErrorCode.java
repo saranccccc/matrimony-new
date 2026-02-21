@@ -36,6 +36,10 @@ public enum ErrorCode {
 
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment not found"),
 
+
+    WALLET_NOT_FOUND(HttpStatus.NOT_FOUND, "Wallet not found"),
+    INSUFFICIENT_WALLET_BALANCE(HttpStatus.FORBIDDEN, "Insufficient balance"),
+
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
 
 
