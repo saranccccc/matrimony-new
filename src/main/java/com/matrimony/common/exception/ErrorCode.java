@@ -36,8 +36,7 @@ public enum ErrorCode {
 
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment not found"),
 
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong")
-
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
 
 
     private final HttpStatus httpStatus;
