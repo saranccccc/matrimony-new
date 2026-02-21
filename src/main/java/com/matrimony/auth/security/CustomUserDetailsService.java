@@ -17,14 +17,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username)
+    public UserDetails loadUserByUsername(String profileId)
             throws UsernameNotFoundException {
 
-        log.info("Loading user from DB: {}", username);
+        log.info("Loading user from DB: {}", profileId);
 
-        User user = userRepository.findByUserName(username).orElseThrow(() -> new UsernameNotFoundException("USER_NOT_FOUND"));
+        User user = userRepository.findByProfileId(profileId).orElseThrow(() -> new UsernameNotFoundException("USER_NOT_FOUND"));
 
-        return new CustomUserDetails(user.getUserName(), user.getPasswordHash()
+        return new CustomUserDetails(user.getProfileId(), user.getPasswordHash()
         );
     }
 }

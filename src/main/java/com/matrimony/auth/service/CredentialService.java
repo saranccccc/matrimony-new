@@ -26,19 +26,14 @@ public class CredentialService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-
-        user.setUserName(username);
         user.setPasswordHash(passwordEncoder.encode(password));
-
-
         userRepository.save(user);
         log.info("Password is encrypted and saved for user:{}", userId);
     }
 
     public String login(LoginRequest request) {
         log.info("User login starts for user:{},", request.getUsername());
-        User user = userRepository.findByUserName(request.getUsername())
+        User user = userRepository.findByProfileIdOrEmailOrMobileNo(request.getUsername(), request.getUsername(), request.getUsername())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (UserStatus.ACTIVE != user.getUserStatus()) {
@@ -52,6 +47,6 @@ public class CredentialService {
             log.info("User login - user:{} invalid credentials", request.getUsername());
             throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
         }
-        return jwtTokenProvider.generateToken(request.getUsername());
+        return jwtTokenProvider.generateToken(user.getProfileId());
     }
 }

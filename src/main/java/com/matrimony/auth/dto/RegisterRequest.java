@@ -7,8 +7,11 @@ import lombok.Data;
 
 @Data
 public class RegisterRequest {
-    @NotBlank(message = "Full name must not be blank")
-    private String fullName;
+    @NotBlank(message = "First name must not be blank")
+    private String firstName;
+
+    @NotBlank(message = "Last name must not be blank")
+    private String lastName;
 
     @NotBlank(message = "Mobile number must not be blank")
     private String mobileNo;

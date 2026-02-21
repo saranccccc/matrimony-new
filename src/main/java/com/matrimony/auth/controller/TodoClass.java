@@ -28,5 +28,9 @@ public class TodoClass {
     //Max attempts → BLOCKED
     //Time expired → EXPIRED
     //Success → USED
+    //
+    //User → Photos
+    //User → Preferences
+    //User → Partner Expectations
 
 }

@@ -17,7 +17,7 @@ public class RegistrationService {
 
     @Transactional
     public void registerUser(RegisterRequest req) {
-        String userId = authService.register(req.getFullName(), req.getMobileNo(), req.getEmail(), req.getPassword());
+        String userId = authService.register(req.getFirstName(), req.getLastName(), req.getMobileNo(), req.getEmail(), req.getPassword());
         otpService.generateAndSaveOtp(userId, OtpChannel.SMS, req.getMobileNo());
         if (null != req.getEmail())
             otpService.generateAndSaveOtp(userId, OtpChannel.EMAIL, req.getEmail());

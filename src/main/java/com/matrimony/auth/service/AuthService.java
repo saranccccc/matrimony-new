@@ -14,8 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -25,25 +23,27 @@ public class AuthService {
     private final AuditService auditService;
     private final OtpService otpService;
     private final PasswordEncoder passwordEncoder;
+    private final ProfileIdGenerator profileIdGenerator;
 
-    public String register(String name, String mobile, String email, String password) {
-        log.info("User registration starts for Name:{}, mobile:{}, email:{}", name, mobile, email);
+    public String register(String firstName, String lastName, String mobile, String email, String password) {
+        log.info("User registration starts for Name:{}, mobile:{}, email:{}", firstName, mobile, email);
         User user = new User();
-        user.setUserId(UUID.randomUUID().toString());
-        user.setFullName(name);
+        //user.setUserId(UUID.randomUUID().toString());
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
         user.setMobileNo(mobile);
         user.setEmail(email);
-        user.setUserName(mobile);
         user.setUserStatus(UserStatus.OTP_PENDING);
+        user.setProfileId(profileIdGenerator.generateProfileId());
         user.setPasswordHash(passwordEncoder.encode(password));
-        auditService.log("USER", user.getUserId(), Event.REGISTER.name(), UserStatus.OTP_PENDING.toString());
+        auditService.log("USER", user.getFirstName(), Event.REGISTER.name(), UserStatus.OTP_PENDING.toString());
         userRepository.save(user);
 // todo : if uqinue index issue comes need to throw user already exists error
-        auditService.log("USER", user.getUserId(),
+        auditService.log("USER", user.getUserId().toString(),
                 "REGISTER", "SUCCESS");
         //sendOtp(user.getUserId(), "SMS");
-        log.info("User registration completed for Name:{}, mobile:{}, email:{} with userId:{}", name, mobile, email, user.getUserId());
-        return user.getUserId();
+        log.info("User registration completed for Name:{}, mobile:{}, email:{} with userId:{}", firstName, mobile, email, user.getUserId());
+        return user.getUserId().toString();
     }
 
 

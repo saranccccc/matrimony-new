@@ -3,7 +3,9 @@ package com.matrimony.auth.controller;
 import com.matrimony.auth.dto.LoginRequest;
 import com.matrimony.auth.dto.LoginResponse;
 import com.matrimony.auth.dto.SetCredentialsRequest;
+import com.matrimony.auth.entity.RefreshToken;
 import com.matrimony.auth.service.CredentialService;
+import com.matrimony.auth.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CredentialController {
 
     private final CredentialService credentialService;
-
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/set-credentials")
     public ResponseEntity<String> setCredentials(
@@ -34,8 +36,9 @@ public class CredentialController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest request) {
-
         String token = credentialService.login(request);
-        return ResponseEntity.ok(new LoginResponse(token));
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken("user.getUserId()");
+        // return ResponseEntity.ok(new LoginResponse(token));
+        return ResponseEntity.ok(new LoginResponse("", ""));
     }
 }
