@@ -43,6 +43,9 @@ public class CredentialService {
             throw new CustomException(ErrorCode.USER_NOT_ACTIVE);
         }
 
+        if (user.getIsBlocked()) {
+            throw new CustomException(ErrorCode.USER_BLOCKED);
+        }
         if (!passwordEncoder.matches(
                 request.getPassword(),
                 user.getPasswordHash())) {

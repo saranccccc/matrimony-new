@@ -27,7 +27,9 @@ public class ChatService {
 
         String user1 = userA.compareTo(userB) < 0 ? userA : userB;
         String user2 = userA.compareTo(userB) < 0 ? userB : userA;
-
+// todo dont send message to blocked user - if (user.getProfileStatus() != ProfileStatus.APPROVED) {
+//    throw new RuntimeException("Profile not approved");
+//}
         return conversationRepository.findByUser1IdAndUser2Id(user1, user2).orElseGet(() -> {
             validateInterestAccepted(userA, userB);
             Conversation conversation = Conversation.builder().user1Id(user1).user2Id(user2).isBlocked(false).build();

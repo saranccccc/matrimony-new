@@ -21,4 +21,10 @@ public class AdminPhotoService {
         photo.setStatus(status);
         photoRepository.save(photo); // Explicit save for clarity
     }
+
+    @Transactional
+    public void updateStatus(Long photoId, PhotoStatus status) {
+        UserPhoto photo = photoRepository.findById(photoId).orElseThrow(() -> new RuntimeException("Photo not found"));
+        photo.setStatus(status);
+    }
 }

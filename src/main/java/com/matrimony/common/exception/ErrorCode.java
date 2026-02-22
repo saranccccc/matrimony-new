@@ -9,6 +9,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
     USER_ALREADY_EXISTS(HttpStatus.CONFLICT, "User already exists"),
     USER_NOT_ACTIVE(HttpStatus.FORBIDDEN, "User not active"),
+    USER_BLOCKED(HttpStatus.FORBIDDEN, "User blocked"),
 
     INVALID_USERNAME(HttpStatus.UNAUTHORIZED, "Invalid username"),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "Invalid password"),
@@ -44,6 +45,7 @@ public enum ErrorCode {
     INVALID_OPERATION(HttpStatus.BAD_REQUEST, "Invalid Operation"),
 
     PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "Profile not found"),
+    PROFILE_NOT_APPROVED(HttpStatus.UNAUTHORIZED, "Profile not approved"),
 
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Invalid action"),
     INTEREST_NOT_FOUND(HttpStatus.NOT_FOUND, "Interest not found"),

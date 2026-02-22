@@ -5,6 +5,7 @@ import com.matrimony.admin.dto.ModerationStatus;
 import com.matrimony.admin.entity.ModerationRequest;
 import com.matrimony.admin.repository.ModerationRepository;
 import com.matrimony.photo.dto.PhotoStatus;
+import com.matrimony.photo.service.AdminPhotoService;
 import com.matrimony.user.dto.ProfileStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,28 +19,15 @@ public class ModerationService {
 
     private final ModerationRepository moderationRepository;
     private final UserService userService;
-    private final PhotoService photoService;
+    private final AdminPhotoService photoService;
 
     // ===============================
     // REQUESTER CREATES REQUEST
     // ===============================
     @Transactional
-    public void createRequest(
-            ModerationAction action,
-            String targetUserId,
-            Long targetPhotoId,
-            String requesterId,
-            String remarks) {
+    public void createRequest(ModerationAction action, String targetUserId, Long targetPhotoId, String requesterId, String remarks) {
 
-        ModerationRequest request =
-                ModerationRequest.builder()
-                        .action(action)
-                        .targetUserId(targetUserId)
-                        .targetPhotoId(targetPhotoId)
-                        .status(ModerationStatus.PENDING)
-                        .requestedBy(requesterId)
-                        .remarks(remarks)
-                        .build();
+        ModerationRequest request = ModerationRequest.builder().action(action).targetUserId(targetUserId).targetPhotoId(targetPhotoId).status(ModerationStatus.PENDING).requestedBy(requesterId).remarks(remarks).build();
 
         moderationRepository.save(request);
     }
@@ -47,25 +35,18 @@ public class ModerationService {
     // ===============================
     // APPROVER GETS PENDING REQUESTS
     // ===============================
-    public Page<ModerationRequest> getPendingRequests(
-            Pageable pageable) {
+    public Page<ModerationRequest> getPendingRequests(Pageable pageable) {
 
-        return moderationRepository
-                .findByStatus(ModerationStatus.PENDING, pageable);
+        return moderationRepository.findByStatus(ModerationStatus.PENDING, pageable);
     }
 
     // ===============================
     // APPROVE REQUEST
     // ===============================
     @Transactional
-    public void approveRequest(
-            Long requestId,
-            String approverId) {
+    public void approveRequest(Long requestId, String approverId) {
 
-        ModerationRequest request =
-                moderationRepository.findById(requestId)
-                        .orElseThrow(() ->
-                                new RuntimeException("Request not found"));
+        ModerationRequest request = moderationRepository.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
 
         if (request.getStatus() != ModerationStatus.PENDING) {
             throw new RuntimeException("Already processed");
@@ -86,14 +67,9 @@ public class ModerationService {
     // REJECT REQUEST
     // ===============================
     @Transactional
-    public void rejectRequest(
-            Long requestId,
-            String approverId) {
+    public void rejectRequest(Long requestId, String approverId) {
 
-        ModerationRequest request =
-                moderationRepository.findById(requestId)
-                        .orElseThrow(() ->
-                                new RuntimeException("Request not found"));
+        ModerationRequest request = moderationRepository.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
 
         if (request.getStatus() != ModerationStatus.PENDING) {
             throw new RuntimeException("Already processed");
@@ -114,24 +90,15 @@ public class ModerationService {
 
         switch (request.getAction()) {
 
-            case APPROVE_PROFILE -> userService.updateProfileStatus(
-                    request.getTargetUserId(),
-                    ProfileStatus.APPROVED);
+            case APPROVE_PROFILE -> userService.updateProfileStatus(request.getTargetUserId(), ProfileStatus.APPROVED);
 
-            case REJECT_PROFILE -> userService.updateProfileStatus(
-                    request.getTargetUserId(),
-                    ProfileStatus.REJECTED);
+            case REJECT_PROFILE -> userService.updateProfileStatus(request.getTargetUserId(), ProfileStatus.REJECTED);
 
-            case BLOCK_USER -> userService.blockUser(
-                    request.getTargetUserId());
+            case BLOCK_USER -> userService.blockUser(request.getTargetUserId());
 
-            case APPROVE_PHOTO -> photoService.updateStatus(
-                    request.getTargetPhotoId(),
-                    PhotoStatus.APPROVED);
+            case APPROVE_PHOTO -> photoService.updateStatus(request.getTargetPhotoId(), PhotoStatus.APPROVED);
 
-            case REJECT_PHOTO -> photoService.updateStatus(
-                    request.getTargetPhotoId(),
-                    PhotoStatus.REJECTED);
+            case REJECT_PHOTO -> photoService.updateStatus(request.getTargetPhotoId(), PhotoStatus.REJECTED);
         }
     }
 }

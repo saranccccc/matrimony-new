@@ -2,6 +2,7 @@ package com.matrimony.auth.entity;
 
 import com.matrimony.common.entity.BaseEntity;
 import com.matrimony.common.util.UlidGenerated;
+import com.matrimony.user.dto.ProfileStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,13 +16,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class User extends BaseEntity {
-
-
-/*    @Id
-    @GeneratedValue
-    @UuidGenerator(style = UuidGenerator.Style.TIME)
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID userId;*/
 
     @Id
     @UlidGenerated
@@ -46,6 +40,11 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
+
+    @Enumerated(EnumType.STRING)
+    private ProfileStatus profileStatus;
+
+    private Boolean isBlocked;
 
 
 }
