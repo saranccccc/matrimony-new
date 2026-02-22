@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 public class RefreshToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String token;  // hashed token
@@ -31,5 +31,5 @@ public class RefreshToken {
 
     private boolean revoked;
 
-    private LocalDateTime createdAt;
+
 }

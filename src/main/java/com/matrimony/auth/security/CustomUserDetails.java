@@ -14,12 +14,17 @@ import java.util.List;
 @Setter
 public class CustomUserDetails implements UserDetails {
 
-    private final String username;
+    private final String userId;
     private final String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(); // later roles add panna mudiyum
+    }
+
+    @Override
+    public String getUsername() {
+        return this.userId;
     }
 
 

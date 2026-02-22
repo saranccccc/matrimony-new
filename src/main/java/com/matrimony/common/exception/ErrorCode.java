@@ -40,6 +40,16 @@ public enum ErrorCode {
     WALLET_NOT_FOUND(HttpStatus.NOT_FOUND, "Wallet not found"),
     INSUFFICIENT_WALLET_BALANCE(HttpStatus.FORBIDDEN, "Insufficient balance"),
 
+
+    INVALID_OPERATION(HttpStatus.BAD_REQUEST, "Invalid Operation"),
+
+    PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "Profile not found"),
+
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Invalid action"),
+    INTEREST_NOT_FOUND(HttpStatus.NOT_FOUND, "Interest not found"),
+    INTEREST_ALREADY_SENT(HttpStatus.BAD_REQUEST, "Interest already sent"),
+
+
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
 
 

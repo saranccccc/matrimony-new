@@ -3,7 +3,6 @@ package com.matrimony.auth.controller;
 import com.matrimony.auth.dto.LoginRequest;
 import com.matrimony.auth.dto.LoginResponse;
 import com.matrimony.auth.dto.SetCredentialsRequest;
-import com.matrimony.auth.entity.RefreshToken;
 import com.matrimony.auth.service.CredentialService;
 import com.matrimony.auth.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +35,6 @@ public class CredentialController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest request) {
-        String token = credentialService.login(request);
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken("user.getUserId()");
-        // return ResponseEntity.ok(new LoginResponse(token));
-        return ResponseEntity.ok(new LoginResponse("", ""));
+        return ResponseEntity.ok(credentialService.login(request));
     }
 }

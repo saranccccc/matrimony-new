@@ -1,6 +1,7 @@
 package com.matrimony.auth.service;
 
 import com.matrimony.auth.dto.LoginRequest;
+import com.matrimony.auth.dto.LoginResponse;
 import com.matrimony.auth.entity.User;
 import com.matrimony.auth.entity.UserStatus;
 import com.matrimony.auth.repository.UserRepository;
@@ -20,6 +21,7 @@ public class CredentialService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     public void setCredentials(String userId, String username, String password) {
         // todo: password encryption at the backend itself
@@ -31,7 +33,7 @@ public class CredentialService {
         log.info("Password is encrypted and saved for user:{}", userId);
     }
 
-    public String login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
         log.info("User login starts for user:{},", request.getUsername());
         User user = userRepository.findByProfileIdOrEmailOrMobileNo(request.getUsername(), request.getUsername(), request.getUsername())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -47,6 +49,10 @@ public class CredentialService {
             log.info("User login - user:{} invalid credentials", request.getUsername());
             throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
         }
-        return jwtTokenProvider.generateToken(user.getProfileId());
+
+        return LoginResponse.builder()
+                .accessToken(jwtTokenProvider.generateToken(user.getUserId()))
+                .refreshToken(refreshTokenService.createRefreshToken(user.getUserId()).getToken())
+                .build();
     }
 }

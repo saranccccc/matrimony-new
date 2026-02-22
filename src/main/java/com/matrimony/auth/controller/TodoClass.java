@@ -60,4 +60,26 @@ public class TodoClass {
     //walletService.debitWallet(userId, cost,
     //                          "CONTACT_UNLOCK", unlockId);
 
+
+    // 🔥 Important Business Rule Extension (Future Ready)
+    //
+    //Later you can add:
+    //
+    //Rule 1:
+    //
+    //If interest ACCEPTED
+    //→ Allow contact unlock at discounted price
+    //
+    //Rule 2:
+    //
+    //If both send interest
+    //→ Auto accept
+    //
+    //Rule 3:
+    //
+    //If rejected
+    //→ Cannot resend for 30 days
+    //
+    //System supports all of this.
+
 }
