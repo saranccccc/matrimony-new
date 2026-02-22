@@ -6,6 +6,8 @@ import com.matrimony.user.dto.VisibilityLevel;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "user_profiles")
 @Getter
@@ -51,4 +53,7 @@ public class UserProfile extends BaseEntity {
     private VisibilityLevel contactVisibility;
 
     private Boolean profileCompleted;
+
+    private Boolean isBoosted;
+    private LocalDateTime boostExpiry;
 }

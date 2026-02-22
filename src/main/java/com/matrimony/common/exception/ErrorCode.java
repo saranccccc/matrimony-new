@@ -49,6 +49,14 @@ public enum ErrorCode {
     INTEREST_NOT_FOUND(HttpStatus.NOT_FOUND, "Interest not found"),
     INTEREST_ALREADY_SENT(HttpStatus.BAD_REQUEST, "Interest already sent"),
 
+    PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "Photo not found"),
+
+    REQUEST_ALREADY_EXISTS(HttpStatus.CONFLICT, "Request already exists"),
+    REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "Interest not found"),
+
+
+    PREFERENCE_NOT_FOUND(HttpStatus.NOT_FOUND, "Preference not found"),
+
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
 

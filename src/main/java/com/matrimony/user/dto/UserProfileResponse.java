@@ -29,4 +29,6 @@ public class UserProfileResponse {
 
     private ProfileStatus status;
     private Boolean profileCompleted;
+
+    private Integer matchScore;
 }
