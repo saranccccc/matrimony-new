@@ -56,7 +56,7 @@ public enum ErrorCode {
 
 
     PREFERENCE_NOT_FOUND(HttpStatus.NOT_FOUND, "Preference not found"),
-
+    CHAT_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "Chat Not allowed"),
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
 
