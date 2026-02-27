@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,14 +24,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
 
+        // 1️⃣ No header → continue
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -38,30 +36,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
+        // 2️⃣ Validate token
         if (!jwtTokenProvider.isTokenValid(token)) {
             log.error("JWT validation failed");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "INVALID_TOKEN");
             return;
         }
 
-        String username = jwtTokenProvider.extractUsername(token);
+        // 3️⃣ Extract userId (subject)
+        String userId = jwtTokenProvider.extractUsername(token);
 
-        var userDetails = userDetailsService.loadUserByUsername(username);
+        // 4️⃣ Load full user details from DB
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
 
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
+        // 5️⃣ Create authentication object (includes ROLE)
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-        authentication.setDetails(
-                new WebAuthenticationDetailsSource().buildDetails(request)
-        );
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+        // 6️⃣ Set into security context
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        log.info("SecurityContext set for user {}", username);
+        log.info("SecurityContext set for user {}", userId);
 
         filterChain.doFilter(request, response);
     }

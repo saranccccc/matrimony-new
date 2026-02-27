@@ -1,5 +1,6 @@
 package com.matrimony.auth.security;
 
+import com.matrimony.auth.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -26,17 +27,18 @@ public class JwtTokenProvider {
     public void init() {
         key = Keys.hmacShaKeyFor(SECRET.getBytes());
     }
-    
+
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username) {
+    public String generateToken(User user) {
 
-        log.info("Generating JWT for user {}", username);
+        log.info("Generating JWT for user {}", user.getUserId());
 
         return Jwts.builder()
-                .subject(username)
+                .subject(user.getUserId())
+                .claim("role", user.getRole().name())   // 👈 ADD ROLE
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60))
                 .signWith(getSigningKey(), Jwts.SIG.HS256)

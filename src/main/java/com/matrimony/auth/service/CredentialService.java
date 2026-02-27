@@ -54,7 +54,7 @@ public class CredentialService {
         }
 
         return LoginResponse.builder()
-                .accessToken(jwtTokenProvider.generateToken(user.getUserId()))
+                .accessToken(jwtTokenProvider.generateToken(user))
                 .refreshToken(refreshTokenService.createRefreshToken(user.getUserId()).getToken())
                 .build();
     }
