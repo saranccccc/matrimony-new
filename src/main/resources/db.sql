@@ -29,8 +29,9 @@ CREATE TABLE `otp_verification` (
   `destination` varchar(255) DEFAULT NULL,
   `expires_at` datetime(6) DEFAULT NULL,
   `attempt_count` bigint NOT NULL,
+  'resend_count' bigint NOT NULL,
   `created_at` datetime(6) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+   PRIMARY KEY (`id`),
      CONSTRAINT fk_otp_user FOREIGN KEY (user_id)  REFERENCES users(user_id)   ON DELETE CASCADE
 );
 
@@ -95,21 +96,6 @@ CREATE TABLE subscriptions (
     status VARCHAR(20) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NULL
-);
-
-CREATE TABLE subscriptions (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id VARCHAR(100) NOT NULL,
-    plan_id BIGINT NOT NULL,
-    plan_name VARCHAR(100) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    start_date TIMESTAMP NOT NULL,
-    expiry_date TIMESTAMP NOT NULL,
-    total_contact_limit INT NOT NULL,
-    remaining_contact_views INT NOT NULL,
-    total_message_limit INT NOT NULL,
-    remaining_messages INT NOT NULL,
-    status VARCHAR(20) NOT NULL
 );
 
 CREATE INDEX idx_subscriptions_user_id ON subscriptions(user_id);
@@ -355,4 +341,3 @@ CREATE TABLE moderation_requests (
 
 CREATE INDEX idx_moderation_status ON moderation_requests(status);
 
-z

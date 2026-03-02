@@ -30,6 +30,9 @@ public enum ErrorCode {
     OTP_RESEND_TOO_FAST(HttpStatus.TOO_MANY_REQUESTS, "Please wait before requesting OTP again"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid JWT token"),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access denied"),
+    MAX_RESEND_LIMIT_REACHED(HttpStatus.BAD_REQUEST, "MAX_RESEND_LIMIT_REACHED"),
+    RESEND_TOO_FAST(HttpStatus.BAD_REQUEST, "RESEND_TOO_FAST"),
+
 
     PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "Plan not found"),
     CONTACT_LIMIT_EXHAUSTED(HttpStatus.BAD_REQUEST, "Contact limit exhausted"),

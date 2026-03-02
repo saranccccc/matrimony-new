@@ -3,11 +3,13 @@ server:
 spring:
   application:
     name: matrimony-app
+  jackson:
+    default-property-inclusion: non_null
 
   datasource:
-    url: jdbc:mysql://localhost:3306/test
-    username: root
-    password: Ambika@89
+    url: jdbc:mysql://localhost:3306/matrimony?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: matrimony_app
+    password: StrongPass@123
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -23,4 +25,11 @@ spring:
 otp:
   length: 6
   expiry-minutes: 5
-  maxAttempts: 3
+  max-verification-attempts: 3
+  resend-interval: 60
+  resend-limit: 3
+
+logging:
+  level:
+    org.hibernate.SQL: INFO
+    org.hibernate.orm.jdbc.bind: INFO

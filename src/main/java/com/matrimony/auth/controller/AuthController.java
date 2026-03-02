@@ -1,5 +1,6 @@
 package com.matrimony.auth.controller;
 
+import com.matrimony.auth.dto.OtpResendRequest;
 import com.matrimony.auth.dto.OtpVerifyRequest;
 import com.matrimony.auth.dto.RegisterRequest;
 import com.matrimony.auth.service.RegistrationService;
@@ -26,6 +27,12 @@ public class AuthController {
         // todo: one more logic to receive both email and sms otp and allow user if mobile no alone verified. currently we are allowing if email given, email address should be verified.
         registrationService.verifyOtp(request);
         return ResponseEntity.ok("OTP Verified");
+    }
+
+    @PostMapping("/resend-otp")
+    public ResponseEntity<String> resendOtp(@RequestBody OtpResendRequest request) {
+        registrationService.resendOtp(request);
+        return ResponseEntity.ok("OTP resent");
     }
 
     @GetMapping("/health")

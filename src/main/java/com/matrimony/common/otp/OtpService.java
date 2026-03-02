@@ -10,4 +10,6 @@ public interface OtpService {
     void verifyOtp(String userId, OtpChannel channel, String enteredOtp);
 
     boolean isOtpVerified(String userId);
+
+    void resendOtp(String userId,OtpChannel channel,String destination);
 }

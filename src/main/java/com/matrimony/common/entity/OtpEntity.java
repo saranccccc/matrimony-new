@@ -34,6 +34,7 @@ public class OtpEntity {
     private LocalDateTime expiresAt;
 
     // ✅ NEW FIELDS (allowed addition)
-    private int attemptCount;
+    private Integer verificationAttemptCount;
+    private Integer resendCount ;
     private LocalDateTime createdAt;
 }
