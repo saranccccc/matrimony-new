@@ -35,7 +35,7 @@ public class RefreshTokenService {
                 .revoked(false)
                 .build();
 
-        repository.save(token);
+      //  repository.save(token);
 
         token.setToken(rawToken); // return raw token only once
         return token;

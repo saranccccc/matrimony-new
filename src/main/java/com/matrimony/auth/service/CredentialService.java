@@ -26,36 +26,34 @@ public class CredentialService {
     public void setCredentials(String userId, String username, String password) {
         // todo: password encryption at the backend itself
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         user.setPasswordHash(passwordEncoder.encode(password));
         userRepository.save(user);
         log.info("Password is encrypted and saved for user:{}", userId);
     }
 
     public LoginResponse login(LoginRequest request) {
-        log.info("User login starts for user:{},", request.getUsername());
-        User user = userRepository.findByProfileIdOrEmailOrMobileNo(request.getUsername(), request.getUsername(), request.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        log.info("Check user is available for userName:{},", request.getUsername());
+        User user = userRepository.findByProfileIdOrEmailOrMobileNo(request.getUsername(), request.getUsername(), request.getUsername()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        log.info("Check user is ACTIVE");
         if (UserStatus.ACTIVE != user.getUserStatus()) {
             log.info("User login - user:{} is not active", request.getUsername());
             throw new CustomException(ErrorCode.USER_NOT_ACTIVE);
         }
 
+        log.info("Check user is blocked");
         if (user.getIsBlocked()) {
             throw new CustomException(ErrorCode.USER_BLOCKED);
         }
-        if (!passwordEncoder.matches(
-                request.getPassword(),
-                user.getPasswordHash())) {
+
+        log.info("Check password");
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             log.info("User login - user:{} invalid credentials", request.getUsername());
             throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
         }
 
-        return LoginResponse.builder()
-                .accessToken(jwtTokenProvider.generateToken(user))
-                .refreshToken(refreshTokenService.createRefreshToken(user.getUserId()).getToken())
-                .build();
+        log.info(" Generate access token and refresh token");
+        return LoginResponse.builder().accessToken(jwtTokenProvider.generateToken(user)).refreshToken(refreshTokenService.createRefreshToken(user.getUserId()).getToken()).build();
     }
 }

@@ -42,7 +42,7 @@ public class RegistrationService {
 
     public void resendOtp(OtpResendRequest request) {
         log.info("1. Resend OTP");
-        otpService.resendOtp(request.getUserId(), request.getChannel(), request.getDestination());
+        otpService.resendOtp(request.getUserId(), request.getChannel());
     }
 
 

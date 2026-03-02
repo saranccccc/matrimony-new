@@ -21,20 +21,13 @@ public class CredentialController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/set-credentials")
-    public ResponseEntity<String> setCredentials(
-            @RequestBody SetCredentialsRequest request) {
-
-        credentialService.setCredentials(
-                request.getUserId(),
-                request.getUsername(),
-                request.getPassword());
-
+    public ResponseEntity<String> setCredentials(@RequestBody SetCredentialsRequest request) {
+        credentialService.setCredentials(request.getUserId(), request.getUsername(), request.getPassword());
         return ResponseEntity.ok("Credentials set successfully");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(
-            @RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(credentialService.login(request));
     }
 }

@@ -7,7 +7,6 @@ import com.matrimony.auth.service.RegistrationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +27,6 @@ public class AuthController {
 
     @PostMapping("/verify-otp")
     public ResponseEntity<String> verifyOtp(@RequestBody OtpVerifyRequest request) {
-        // todo: one more logic to receive both email and sms otp and allow user if mobile no alone verified. currently we are allowing if email given, email address should be verified.
         registrationService.verifyOtp(request);
         return ResponseEntity.ok("OTP Verified");
     }
@@ -37,10 +35,5 @@ public class AuthController {
     public ResponseEntity<String> resendOtp(@RequestBody OtpResendRequest request) {
         registrationService.resendOtp(request);
         return ResponseEntity.ok("OTP resent");
-    }
-
-    @GetMapping("/health")
-    public ResponseEntity<?> health() {
-        return ResponseEntity.ok("Service is running");
     }
 }

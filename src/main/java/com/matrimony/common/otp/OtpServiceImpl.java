@@ -96,9 +96,9 @@ public class OtpServiceImpl implements OtpService {
     }
 
     @Override
-    public void resendOtp(String userId, OtpChannel channel, String destination) {
+    public void resendOtp(String userId, OtpChannel channel) {
         log.info("Select the top active OTP");
-        OtpEntity latestOtp = otpRepository.findTopByUserIdAndChannelAndStatusOrderByCreatedAtDesc(userId, channel, OtpStatus.ACTIVE).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        OtpEntity latestOtp = otpRepository.findTopByUserIdAndChannelOrderByCreatedAtDesc(userId, channel).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         log.info("Check already verified");
         if (OtpStatus.USED == latestOtp.getStatus()) {
@@ -132,7 +132,7 @@ public class OtpServiceImpl implements OtpService {
                 .otp(hashedOtp)
                 .channel(channel)
                 .status(OtpStatus.ACTIVE)
-                .destination(destination)
+                .destination(latestOtp.getDestination())
                 .verificationAttemptCount(0)
                 .resendCount(latestOtp.getResendCount() == null ? 1 : latestOtp.getResendCount() + 1)
                 .expiresAt(LocalDateTime.now().plusMinutes(otpProperties.getExpiryMinutes()))

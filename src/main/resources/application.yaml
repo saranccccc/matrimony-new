@@ -28,6 +28,9 @@ otp:
   max-verification-attempts: 3
   resend-interval: 60
   resend-limit: 3
+token:
+  secret: "matrimony-secret-key-very-secure-and-long-enough-256bits"
+  expiry: 60000
 
 logging:
   level:
