@@ -20,22 +20,22 @@ public class UserProfileController {
 
     private final UserProfileService profileService;
 
+    @GetMapping
+    public ResponseEntity<UserProfileResponse> getProfile(@AuthenticationPrincipal CustomUserDetails user) {
+        return ResponseEntity.ok(profileService.getProfile(user.getUserId()));
+    }
+
     @PostMapping
-    public ResponseEntity<?> saveProfile(
-            @AuthenticationPrincipal CustomUserDetails user,
-            @RequestBody UserProfileRequest request) {
-
-        profileService.createOrUpdateProfile(
-                user.getUserId(), request);
-
+    public ResponseEntity<?> saveProfile(@AuthenticationPrincipal CustomUserDetails user, @RequestBody UserProfileRequest request) {
+        profileService.createOrUpdateProfile(user.getUserId(), request);
         return ResponseEntity.ok("Profile saved successfully");
     }
 
-    @GetMapping
-    public ResponseEntity<UserProfileResponse> getProfile(
-            @AuthenticationPrincipal CustomUserDetails user) {
-
-        return ResponseEntity.ok(
-                profileService.getProfile(user.getUserId()));
+    @PostMapping
+    public ResponseEntity<?> savePartnerPreference(@AuthenticationPrincipal CustomUserDetails user, @RequestBody UserProfileRequest request) {
+        profileService.createOrUpdateProfile(user.getUserId(), request);
+        return ResponseEntity.ok("Profile saved successfully");
     }
+
+
 }

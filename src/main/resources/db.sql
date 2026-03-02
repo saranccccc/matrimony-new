@@ -201,6 +201,8 @@ CREATE TABLE user_profiles
     photo_visibility   VARCHAR(30),
     contact_visibility VARCHAR(30),
     profile_completed  BOOLEAN               DEFAULT FALSE,
+    is_boosted         TINYINT,
+    boost_expiry       TIMESTAMP,
     created_at         TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at         TIMESTAMP    NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     created_by         varchar(255)          DEFAULT NULL,

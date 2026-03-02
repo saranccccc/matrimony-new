@@ -66,5 +66,6 @@ public class UserProfile extends BaseEntity {
     private Boolean profileCompleted;
 
     private Boolean isBoosted;
+
     private LocalDateTime boostExpiry;
 }

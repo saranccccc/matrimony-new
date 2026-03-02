@@ -15,9 +15,7 @@ import java.util.List;
 @RequestMapping("/api/v1/user/matches")
 @RequiredArgsConstructor
 public class MatchController {
-
     private final MatchEngineService matchService;
-
     @GetMapping
     public List<UserProfileResponse> getMatches(@AuthenticationPrincipal CustomUserDetails user) {
         return matchService.findMatches(user.getUserId());

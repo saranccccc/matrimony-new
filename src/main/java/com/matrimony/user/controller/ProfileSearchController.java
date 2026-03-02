@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/user/search")
 @RequiredArgsConstructor
 public class ProfileSearchController {
-
     private final ProfileSearchService searchService;
-
     @PostMapping
     public Page<UserProfileResponse> search(@AuthenticationPrincipal CustomUserDetails user, @RequestBody ProfileSearchRequest request, Pageable pageable) {
         return searchService.search(user.getUserId(), request, pageable);
