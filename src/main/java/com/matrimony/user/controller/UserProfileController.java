@@ -31,11 +31,4 @@ public class UserProfileController {
         return ResponseEntity.ok("Profile saved successfully");
     }
 
-    @PostMapping
-    public ResponseEntity<?> savePartnerPreference(@AuthenticationPrincipal CustomUserDetails user, @RequestBody UserProfileRequest request) {
-        profileService.createOrUpdateProfile(user.getUserId(), request);
-        return ResponseEntity.ok("Profile saved successfully");
-    }
-
-
 }

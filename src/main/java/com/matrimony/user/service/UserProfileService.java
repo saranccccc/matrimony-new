@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserProfileService {
     private final UserProfileRepository profileRepository;
-    private final PartnerPreferenceRepository preferenceRepository;
+
     @Transactional
     public void createOrUpdateProfile(String userId, UserProfileRequest request) {
         log.info("Retrieve profile by userId:{},", userId);

@@ -1,4 +1,4 @@
-package com.matrimony.user.entity;
+package com.matrimony.user.dto;
 
 import com.matrimony.common.entity.BaseEntity;
 import jakarta.persistence.CollectionTable;
@@ -20,41 +20,22 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "partner_preferences")
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PartnerPreference extends BaseEntity {
+public class PartnerPreferenceResponse  {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(unique = true, nullable = false)
     private String userId;
-
     private Integer minAge;
     private Integer maxAge;
-
     private Boolean religionNoBar;
     private Boolean casteNoBar;
-
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name="partner_preferences_religions", joinColumns = @JoinColumn(name="preference_id"))
-    @Column(name = "religion", nullable = false)
     private Set<String> preferredReligions = new HashSet<>();
-
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name="partner_preferences_castes", joinColumns = @JoinColumn(name="preference_id"))
-    @Column(name = "caste", nullable = false)
     private Set<String> preferredCastes= new HashSet<>();
-
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name="partner_preferences_cities", joinColumns = @JoinColumn(name="preference_id"))
-    @Column(name = "city", nullable = false)
     private Set<String> cities = new HashSet<>();
 
 }

@@ -235,6 +235,27 @@ CREATE TABLE partner_preferences
 
 CREATE INDEX idx_pref_user_id ON partner_preferences (user_id);
 
+CREATE TABLE partner_preferences_cities
+(
+    preference_id BIGINT       NOT NULL,
+    city          varchar(100) NOT NULL,
+    primary key (preference_id, city)
+);
+
+CREATE TABLE partner_preferences_religions
+(
+    preference_id BIGINT       NOT NULL,
+    religion      varchar(100) NOT NULL,
+    primary key (preference_id, religion)
+);
+
+CREATE TABLE partner_preferences_castes
+(
+    preference_id BIGINT       NOT NULL,
+    caste         varchar(100) NOT NULL,
+    primary key (preference_id, caste)
+);
+
 CREATE TABLE interests
 (
     id               BIGINT PRIMARY KEY AUTO_INCREMENT,
