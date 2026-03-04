@@ -47,13 +47,10 @@ public class PartnerPreferenceService {
     @Transactional
     public void updateReligions(String userId, Set<String> religions) {
         PartnerPreference pref = preferenceRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("PREFERENCE_NOT_FOUND"));
-
         pref.getPreferredReligions().clear();
         if (religions != null) {
             pref.getPreferredReligions().addAll(normalize(religions));
         }
-
-        // No explicit repo.save() required if pref is managed, but it's ok to call save.
         preferenceRepository.save(pref);
     }
 

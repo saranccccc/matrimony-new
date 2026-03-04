@@ -30,7 +30,7 @@ otp:
   resend-limit: 3
 token:
   secret: "matrimony-secret-key-very-secure-and-long-enough-256bits"
-  expiry: 60000
+  expiry: 600000
 
 logging:
   level:
