@@ -28,11 +28,9 @@ public class PlanService {
                 .messageLimit(request.getMessageLimit())
                 .chatEnabled(request.getChatEnabled())
                 .profileBoostEnabled(request.getProfileBoostEnabled())
-                .active(true)
+                .active(request.getActive())
                 .build();
-
         planRepository.save(plan);
-
         return mapToResponse(plan);
     }
 

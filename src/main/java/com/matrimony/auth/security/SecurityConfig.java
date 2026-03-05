@@ -23,28 +23,30 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-        http.csrf(AbstractHttpConfigurer::disable).
-                authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/auth/**").permitAll().requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN_REQUESTER", "ADMIN_APPROVER").anyRequest().authenticated()).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authenticationProvider(authenticationProvider()).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)  {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth
+                        // Public
+                        .requestMatchers("/api/v1/auth/**", "/api/v1/test/**", "/actuator/health").permitAll()
+                        // Admin APIs
+                        .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN_REQUESTER", "ADMIN_APPROVER")
+                        // User APIs
+                        .requestMatchers("/api/v1/user/**").hasRole("USER")
+                        // Everything else must be authenticated
+                        .anyRequest().authenticated()
+                   );
         return http.build();
-        //    .requestMatchers("/api/v1/auth/**", "/api/v1/test/**", "/api/v1/admin/**", "/actuator/health").permitAll()
-        //                        .anyRequest().authenticated()
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-
-        DaoAuthenticationProvider provider =
-                new DaoAuthenticationProvider(userDetailsService);
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
-
         return provider;
     }
 
-  /*  @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }*/
 }

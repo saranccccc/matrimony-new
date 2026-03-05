@@ -19,4 +19,5 @@ public class CreatePlanRequest {
     private Integer messageLimit;
     private Boolean chatEnabled;
     private Boolean profileBoostEnabled;
+    private Boolean active;
 }

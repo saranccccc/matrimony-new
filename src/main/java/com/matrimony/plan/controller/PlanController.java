@@ -1,10 +1,12 @@
 package com.matrimony.plan.controller;
 
+import com.matrimony.auth.security.CustomUserDetails;
 import com.matrimony.plan.dto.CreatePlanRequest;
 import com.matrimony.plan.dto.PlanResponse;
 import com.matrimony.plan.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,13 +23,12 @@ public class PlanController {
     private final PlanService planService;
 
     @PostMapping
-    public ResponseEntity<PlanResponse> createPlan(
-            @RequestBody CreatePlanRequest request) {
+    public ResponseEntity<PlanResponse> createPlan(@AuthenticationPrincipal CustomUserDetails user,@RequestBody CreatePlanRequest request) {
         return ResponseEntity.ok(planService.createPlan(request));
     }
 
     @GetMapping("/active")
-    public ResponseEntity<List<PlanResponse>> getActivePlans() {
+    public ResponseEntity<List<PlanResponse>> getActivePlans(@AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(planService.getActivePlans());
     }
 }
