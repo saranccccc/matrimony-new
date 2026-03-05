@@ -11,5 +11,6 @@ public class TokenProperties {
 
     private String secret = "matrimony-secret-key-very-secure-and-long-enough-256bits";
     private long expiry = 60000;
+    private Long refreshTokenExpiry;
 
 }

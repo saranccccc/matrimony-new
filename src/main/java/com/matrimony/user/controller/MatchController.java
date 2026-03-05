@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MatchController {
     private final MatchEngineService matchService;
+
     @GetMapping
     public ResponseEntity<List<UserProfileResponse>> getMatches(@AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(matchService.findMatches(user.getUserId()));

@@ -33,7 +33,7 @@ public class UserDto {
 
     private ProfileStatus profileStatus;
 
-    private Boolean isBlocked ;
+    private Boolean isBlocked;
 
     private Role role;
 }

@@ -6,7 +6,6 @@ import com.matrimony.user.dto.ProfileStatus;
 import com.matrimony.user.dto.UserProfileRequest;
 import com.matrimony.user.dto.UserProfileResponse;
 import com.matrimony.user.entity.UserProfile;
-import com.matrimony.user.repository.PartnerPreferenceRepository;
 import com.matrimony.user.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

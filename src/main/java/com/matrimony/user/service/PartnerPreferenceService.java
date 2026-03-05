@@ -1,10 +1,10 @@
 package com.matrimony.user.service;
 
+import com.matrimony.common.dto.Result;
 import com.matrimony.common.exception.CustomException;
 import com.matrimony.common.exception.ErrorCode;
 import com.matrimony.user.dto.PartnerPreferenceRequest;
 import com.matrimony.user.dto.PartnerPreferenceResponse;
-import com.matrimony.user.dto.UserProfileResponse;
 import com.matrimony.user.entity.PartnerPreference;
 import com.matrimony.user.mapper.PartnerPreferenceMapper;
 import com.matrimony.user.repository.PartnerPreferenceRepository;
@@ -24,7 +24,7 @@ public class PartnerPreferenceService {
     private final PartnerPreferenceMapper partnerPreferenceMapper;
 
     @Transactional
-    public void createOrUpdatePartnerPreference(String userId, PartnerPreferenceRequest request) {
+    public Result createOrUpdatePartnerPreference(String userId, PartnerPreferenceRequest request) {
         log.info("Retrieve PartnerPreference by userId:{},", userId);
         PartnerPreference partnerPreference = preferenceRepository.findByUserId(userId).orElse(new PartnerPreference());
         partnerPreference.setUserId(userId);
@@ -35,6 +35,8 @@ public class PartnerPreferenceService {
         partnerPreference.setPreferredCastes(request.getPreferredCastes());
         preferenceRepository.save(partnerPreference);
         log.info("PartnerPreference saved successfully for userId:{},", userId);
+        return Result.builder().status(0).build();
+
     }
 
 

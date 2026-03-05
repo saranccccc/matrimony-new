@@ -41,6 +41,6 @@ public class OtpEntity {
 
     // ✅ NEW FIELDS (allowed addition)
     private Integer verificationAttemptCount;
-    private Integer resendCount ;
+    private Integer resendCount;
     private LocalDateTime createdAt;
 }

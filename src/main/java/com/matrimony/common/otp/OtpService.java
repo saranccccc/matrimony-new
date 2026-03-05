@@ -11,5 +11,5 @@ public interface OtpService {
 
     boolean isOtpVerified(String userId);
 
-    void resendOtp(String userId,OtpChannel channel);
+    void resendOtp(String userId, OtpChannel channel);
 }

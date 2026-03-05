@@ -14,11 +14,12 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 @AllArgsConstructor
 public class AwsConfig {
     private final AwsProperties awsProperties;
+
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
                 .region(Region.of(awsProperties.getS3().getRegion()))
-                .credentialsProvider(DefaultCredentialsProvider.create())
+                .credentialsProvider(DefaultCredentialsProvider.builder().build())
                 .build();
     }
 
@@ -26,7 +27,7 @@ public class AwsConfig {
     public S3Presigner s3Presigner() {
         return S3Presigner.builder()
                 .region(Region.of(awsProperties.getS3().getRegion()))
-                .credentialsProvider(DefaultCredentialsProvider.create())
+                .credentialsProvider(DefaultCredentialsProvider.builder().build())
                 .build();
     }
 }

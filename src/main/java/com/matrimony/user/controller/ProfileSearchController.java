@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ProfileSearchController {
     private final ProfileSearchService searchService;
+
     @PostMapping
     public ResponseEntity<Page<UserProfileResponse>> search(@AuthenticationPrincipal CustomUserDetails user, @RequestBody ProfileSearchRequest request, Pageable pageable) {
         return ResponseEntity.ok(searchService.search(user.getUserId(), request, pageable));

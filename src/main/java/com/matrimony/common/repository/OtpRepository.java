@@ -12,8 +12,11 @@ import java.util.Optional;
 public interface OtpRepository extends JpaRepository<OtpEntity, Long> {
 
     Optional<OtpEntity> findTopByUserIdAndChannelOrderByIdDesc(String userId, OtpChannel channel);
+
     Optional<OtpEntity> findTopByUserIdAndChannelAndDestination(String userId, OtpChannel channel, String destination);
+
     Optional<OtpEntity> findTopByUserIdAndChannelAndStatusOrderByCreatedAtDesc(String userId, OtpChannel channel, OtpStatus status);
+
     Optional<OtpEntity> findTopByUserIdAndChannelOrderByCreatedAtDesc(String userId, OtpChannel channel);
 
     @Modifying

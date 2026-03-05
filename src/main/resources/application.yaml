@@ -43,6 +43,7 @@ photo:
 token:
   secret: "matrimony-secret-key-very-secure-and-long-enough-256bits"
   expiry: 600000
+  refresh-token-expiry: 7
 
 logging:
   level:

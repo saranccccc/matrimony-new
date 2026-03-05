@@ -44,5 +44,5 @@ public class UserPhoto extends BaseEntity {
     private PhotoVisibility visibility;
 
     private Boolean isDeleted;
-    
+
 }

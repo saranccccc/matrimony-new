@@ -2,6 +2,7 @@ package com.matrimony.auth.service;
 
 import com.matrimony.auth.entity.RefreshToken;
 import com.matrimony.auth.repository.RefreshTokenRepository;
+import com.matrimony.auth.security.TokenProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,8 +19,8 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenProperties tokenProperties;
 
-    private final long REFRESH_EXPIRY_DAYS = 7;
 
     @Transactional
     public RefreshToken createRefreshToken(String userId) {
@@ -31,11 +32,11 @@ public class RefreshTokenService {
         RefreshToken token = RefreshToken.builder()
                 .token(passwordEncoder.encode(rawToken))
                 .userId(userId)
-                .expiryDate(LocalDateTime.now().plusDays(REFRESH_EXPIRY_DAYS))
+                .expiryDate(LocalDateTime.now().plusDays(tokenProperties.getRefreshTokenExpiry()))
                 .revoked(false)
                 .build();
 
-      //  repository.save(token);
+        //  repository.save(token);
 
         token.setToken(rawToken); // return raw token only once
         return token;

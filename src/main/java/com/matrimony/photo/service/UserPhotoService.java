@@ -24,10 +24,10 @@ import java.util.Set;
 @Slf4j
 public class UserPhotoService {
 
+    private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of(MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, "image/webp");
     private final UserPhotoRepository photoRepository;
     private final S3Service s3Service;
     private final PhotoProperties photoProperties;
-    private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of(MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, "image/webp");
 
     @Transactional
     public PhotoResponse uploadPhotoToS3(String userId, MultipartFile file, PhotoVisibility visibility) {
@@ -75,7 +75,7 @@ public class UserPhotoService {
         if (!photo.getUserId().equals(userId)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
-        if(Boolean.TRUE == photo.getIsPrimary()){
+        if (Boolean.TRUE == photo.getIsPrimary()) {
             throw new CustomException(ErrorCode.INVALID_OPERATION_PHOTO);
         }
         photo.setIsDeleted(true);

@@ -28,7 +28,7 @@ public class S3Service {
     public String createUploadUrl(String userId, MultipartFile file) {
         String contentType = file.getContentType();
         String extension = resolveExtension(file.getContentType());
-      //  String extension = extractExtension(Objects.requireNonNull(file.getOriginalFilename()));
+        //  String extension = extractExtension(Objects.requireNonNull(file.getOriginalFilename()));
         String objectKey = buildS3Key(userId, extension);
         try {
             PutObjectRequest putReq = PutObjectRequest.builder().bucket(awsProperties.getS3().getBucketName()).key(objectKey).contentType(contentType).build();

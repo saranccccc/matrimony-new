@@ -1,9 +1,9 @@
 package com.matrimony.user.controller;
 
 import com.matrimony.auth.security.CustomUserDetails;
+import com.matrimony.common.dto.Result;
 import com.matrimony.user.dto.PartnerPreferenceRequest;
 import com.matrimony.user.dto.PartnerPreferenceResponse;
-import com.matrimony.user.dto.UserProfileResponse;
 import com.matrimony.user.service.PartnerPreferenceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +22,8 @@ public class PartnerPreferenceController {
     private final PartnerPreferenceService partnerPreferenceService;
 
     @PostMapping
-    public ResponseEntity<?> savePartnerPreference(@AuthenticationPrincipal CustomUserDetails user, @RequestBody PartnerPreferenceRequest request) {
-        partnerPreferenceService.createOrUpdatePartnerPreference(user.getUserId(),request);
-        return ResponseEntity.ok("PartnerPreference saved/updated successfully");
+    public ResponseEntity<Result> savePartnerPreference(@AuthenticationPrincipal CustomUserDetails user, @RequestBody PartnerPreferenceRequest request) {
+        return ResponseEntity.ok( partnerPreferenceService.createOrUpdatePartnerPreference(user.getUserId(), request));
     }
 
 

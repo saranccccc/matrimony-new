@@ -43,17 +43,17 @@ public class PartnerPreference extends BaseEntity {
     private Boolean casteNoBar;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name="partner_preferences_religions", joinColumns = @JoinColumn(name="preference_id"))
+    @CollectionTable(name = "partner_preferences_religions", joinColumns = @JoinColumn(name = "preference_id"))
     @Column(name = "religion", nullable = false)
     private Set<String> preferredReligions = new HashSet<>();
 
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name="partner_preferences_castes", joinColumns = @JoinColumn(name="preference_id"))
+    @CollectionTable(name = "partner_preferences_castes", joinColumns = @JoinColumn(name = "preference_id"))
     @Column(name = "caste", nullable = false)
-    private Set<String> preferredCastes= new HashSet<>();
+    private Set<String> preferredCastes = new HashSet<>();
 
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name="partner_preferences_cities", joinColumns = @JoinColumn(name="preference_id"))
+    @CollectionTable(name = "partner_preferences_cities", joinColumns = @JoinColumn(name = "preference_id"))
     @Column(name = "city", nullable = false)
     private Set<String> cities = new HashSet<>();
 
