@@ -55,14 +55,19 @@ public enum ErrorCode {
     INTEREST_ALREADY_SENT(HttpStatus.BAD_REQUEST, "Interest already sent"),
 
     PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "Photo not found"),
-
+    PHOTO_LIMIT_REACHED(HttpStatus.BAD_REQUEST, "Photo limit reached"),
     REQUEST_ALREADY_EXISTS(HttpStatus.CONFLICT, "Request already exists"),
     REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "Interest not found"),
 
 
     PREFERENCE_NOT_FOUND(HttpStatus.NOT_FOUND, "Preference not found"),
     CHAT_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "Chat Not allowed"),
-
+    INVALID_PHOTO_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Photo request"),
+    INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST, "Invalid file type"),
+    S3_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "S3 upload failed"),
+    PHOTO_TOO_LARGE(HttpStatus.BAD_REQUEST, "Max file size is 1MB"),
+    INVALID_PHOTO_TYPE(HttpStatus.BAD_REQUEST, " Only JPG/PNG/WEBP images are allowed"),
+    INVALID_OPERATION_PHOTO(HttpStatus.BAD_REQUEST, "Primary photo cant be deleted"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
 
 

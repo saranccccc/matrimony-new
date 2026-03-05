@@ -20,7 +20,7 @@ public class MatchEngineService {
     private final PartnerPreferenceRepository preferenceRepository;
 
     public List<UserProfileResponse> findMatches(String userId) {
-        UserProfile user = profileRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.PROFILE_NOT_FOUND));
+        UserProfile user = profileRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         PartnerPreference preference = preferenceRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.PREFERENCE_NOT_FOUND));
         List<UserProfile> candidates = profileRepository.findAll((root, query, cb) -> cb.and(cb.notEqual(root.get("userId"), userId), root.get("status").in(ProfileStatus.APPROVED, ProfileStatus.COMPLETED)));
         return candidates.stream().map(candidate -> {

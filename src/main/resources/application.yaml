@@ -1,8 +1,10 @@
 server:
   port: 9090
 spring:
+
   application:
     name: matrimony-app
+
   jackson:
     default-property-inclusion: non_null
 
@@ -22,12 +24,22 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 otp:
   length: 6
   expiry-minutes: 5
   max-verification-attempts: 3
   resend-interval: 60
   resend-limit: 3
+
+photo:
+  max-count: 3
+  max-file-size: 2000000
+
 token:
   secret: "matrimony-secret-key-very-secure-and-long-enough-256bits"
   expiry: 600000
@@ -36,3 +48,13 @@ logging:
   level:
     org.hibernate.SQL: INFO
     org.hibernate.orm.jdbc.bind: INFO
+
+aws:
+  s3:
+    region: ap-southeast-1
+    bucket-name: matrimony-user-photos
+    prefix: profile-photos
+  dynamodb:
+    region: ap-southeast-1
+    table-name: matrimony-users
+    endpoint: http://localhost:8000
