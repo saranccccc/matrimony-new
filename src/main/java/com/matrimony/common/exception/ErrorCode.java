@@ -17,6 +17,7 @@ public enum ErrorCode {
 
     OTP_EXPIRED(HttpStatus.BAD_REQUEST, "OTP expired"),
     OTP_INVALID(HttpStatus.BAD_REQUEST, "Invalid OTP"),
+    OTP_EXPIRED_INVALID(HttpStatus.BAD_REQUEST, "OTP expired/invalid"),
     SMS_OTP_INVALID(HttpStatus.BAD_REQUEST, "Invalid SMS OTP"),
     SMS_OTP_EXPIRED(HttpStatus.BAD_REQUEST, "SMS OTP expired"),
     SMS_OTP_ALREADY_VERIFIED(HttpStatus.BAD_REQUEST, "SMS OTP already verified"),

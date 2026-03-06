@@ -9,8 +9,15 @@ import com.matrimony.payment.dto.PaymentResponse;
 import com.matrimony.payment.dto.PaymentStatus;
 import com.matrimony.payment.entity.Payment;
 import com.matrimony.payment.repository.PaymentRepository;
+import com.matrimony.plan.entity.Plan;
+import com.matrimony.plan.service.PlanService;
 import com.matrimony.subscription.dto.ActivateSubscriptionRequest;
+import com.matrimony.subscription.dto.PurchaseSubscriptionRequest;
+import com.matrimony.subscription.dto.PurchaseSubscriptionResponse;
 import com.matrimony.subscription.service.SubscriptionService;
+import com.matrimony.wallet.dto.CreditDebitWalletRequest;
+import com.matrimony.wallet.dto.WalletTopupRequest;
+import com.matrimony.wallet.dto.WalletTopupResponse;
 import com.matrimony.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +35,34 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final SubscriptionService subscriptionService;
     private final WalletService walletService;
+    private final PlanService planService;
+
+    @Transactional
+    public PurchaseSubscriptionResponse initiatePurchase(PurchaseSubscriptionRequest request) {
+        log.info("1. Get payment gateway");
+        log.info("2. Check plan details");
+        Plan plan= planService.getActivePlan(request.getPlanId());
+        log.info("3. Initiate the payment");
+        Payment payment= initPayment(PaymentInitRequest.builder().userId(request.getUserId()).planId(request.getPlanId()).gateway(request.getPaymentGateway()).amount(plan.getPrice()).paymentPurpose(PaymentPurpose.SUBSCRIPTION).build());
+        log.info("4. Subscription payment initiated userId={}, planId={}, paymentId={}", request.getUserId(), request.getPlanId(), payment.getId());
+        return PurchaseSubscriptionResponse.builder()
+                .paymentId(payment.getId())
+                .amount(payment.getAmount())
+                .paymentGateway(request.getPaymentGateway())
+                .message("Payment initiated. Call payment success API (mock) to activate subscription.")
+                .build();
+    }
+
+    @Transactional
+    public WalletTopupResponse initiateWalletTopup(WalletTopupRequest request) {
+        Payment payment = initPayment(PaymentInitRequest.builder().userId(request.getUserId()).gateway(request.getPaymentGateway()).amount(request.getAmount()).paymentPurpose(PaymentPurpose.WALLET_RECHARGE).build());
+        log.info("Wallet topup initiated userId={}, paymentId={}, amount={}", request.getUserId(), payment.getId(), request.getAmount());
+        return WalletTopupResponse.builder()
+                .paymentId(payment.getId())
+                .amount(request.getAmount())
+                .message("Wallet topup initiated. Complete payment.")
+                .build();
+    }
     public Payment initPayment(PaymentInitRequest paymentInitRequest) {
         Payment payment = Payment.builder()
                 .userId(paymentInitRequest.getUserId())
@@ -41,7 +76,6 @@ public class PaymentService {
                 .build();
         return paymentRepository.save(payment);
     }
-
     @Transactional
     public void markPaymentSuccess(PaymentResponse paymentResponse) {
         Payment payment=  getPayment(paymentResponse.getUserId(), paymentResponse.getPaymentId());
@@ -54,7 +88,7 @@ public class PaymentService {
         if (PaymentPurpose.SUBSCRIPTION.name().equals(payment.getPurpose())) {
             subscriptionService.activateSubscriptionFromPayment(ActivateSubscriptionRequest.builder().userId(paymentResponse.getUserId()).planId(payment.getPlanId()).build());
         } else if (PaymentPurpose.WALLET_RECHARGE.name().equals(payment.getPurpose())) {
-            walletService.creditWallet(paymentResponse.getUserId(), payment.getAmount(),"WALLET_RECHARGE",paymentResponse.getTransactionId());
+             walletService.creditWallet( CreditDebitWalletRequest.builder().userId(paymentResponse.getUserId()).amount(payment.getAmount()).referenceType("WALLET_RECHARGE").referenceId(paymentResponse.getTransactionId()).build());
         }
     }
 

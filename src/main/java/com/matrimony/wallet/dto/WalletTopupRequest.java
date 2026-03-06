@@ -12,9 +12,11 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class WalletTopupRequest {
+    @NotBlank(message = "UserId cannot be blank")
+    private String userId;
     @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount must be greater than 0")
     private BigDecimal amount;
-    @NotBlank(message = "Gateway cannot be blank")
+    @NotNull(message = "Gateway cannot be blank")
     private PaymentGateWay paymentGateway; // MOCK for now
 }

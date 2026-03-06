@@ -1,5 +1,7 @@
 package com.matrimony.auth.security;
 
+import com.matrimony.common.exception.CustomException;
+import com.matrimony.common.exception.ErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (!jwtTokenProvider.isTokenValid(token)) {
             log.error("JWT validation failed");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "INVALID_TOKEN");
-            return;
+            throw new CustomException(ErrorCode.OTP_EXPIRED_INVALID);
         }
 
         // 3️⃣ Extract userId (subject)

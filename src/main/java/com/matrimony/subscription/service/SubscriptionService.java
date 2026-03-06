@@ -3,15 +3,9 @@ package com.matrimony.subscription.service;
 import com.matrimony.common.exception.CustomException;
 import com.matrimony.common.exception.ErrorCode;
 import com.matrimony.common.validator.AutoValidate;
-import com.matrimony.payment.dto.PaymentInitRequest;
-import com.matrimony.payment.dto.PaymentPurpose;
-import com.matrimony.payment.entity.Payment;
-import com.matrimony.payment.service.PaymentService;
 import com.matrimony.plan.entity.Plan;
 import com.matrimony.plan.service.PlanService;
 import com.matrimony.subscription.dto.ActivateSubscriptionRequest;
-import com.matrimony.subscription.dto.PurchaseSubscriptionRequest;
-import com.matrimony.subscription.dto.PurchaseSubscriptionResponse;
 import com.matrimony.subscription.dto.SubscriptionStatus;
 import com.matrimony.subscription.entity.Subscription;
 import com.matrimony.subscription.repository.SubscriptionRepository;
@@ -34,23 +28,8 @@ import java.util.Optional;
 public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
-    private final PaymentService paymentService;
     private final PlanService planService;
-    @Transactional
-    public PurchaseSubscriptionResponse initiatePurchase( PurchaseSubscriptionRequest request) {
-        log.info("1. Get payment gateway");
-        log.info("2. Check plan details");
-        Plan plan= planService.getActivePlan(request.getPlanId());
-        log.info("3. Initiate the payment");
-        Payment payment= paymentService.initPayment(PaymentInitRequest.builder().userId(request.getUserId()).planId(request.getPlanId()).gateway(request.getPaymentGateway()).amount(plan.getPrice()).paymentPurpose(PaymentPurpose.SUBSCRIPTION).build());
-        log.info("4. Subscription payment initiated userId={}, planId={}, paymentId={}", request.getUserId(), request.getPlanId(), payment.getId());
-        return PurchaseSubscriptionResponse.builder()
-                .paymentId(payment.getId())
-                .amount(payment.getAmount())
-                .paymentGateway(request.getPaymentGateway())
-                .message("Payment initiated. Call payment success API (mock) to activate subscription.")
-                .build();
-    }
+
 
     /**
      * Called after payment SUCCESS (webhook in future)

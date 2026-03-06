@@ -3,13 +3,8 @@ package com.matrimony.wallet.service;
 import com.matrimony.common.exception.CustomException;
 import com.matrimony.common.exception.ErrorCode;
 import com.matrimony.common.validator.AutoValidate;
-import com.matrimony.payment.dto.PaymentInitRequest;
-import com.matrimony.payment.dto.PaymentPurpose;
-import com.matrimony.payment.entity.Payment;
-import com.matrimony.payment.service.PaymentService;
+import com.matrimony.wallet.dto.CreditDebitWalletRequest;
 import com.matrimony.wallet.dto.TransactionType;
-import com.matrimony.wallet.dto.WalletTopupRequest;
-import com.matrimony.wallet.dto.WalletTopupResponse;
 import com.matrimony.wallet.entity.Wallet;
 import com.matrimony.wallet.entity.WalletTransaction;
 import com.matrimony.wallet.repository.WalletRepository;
@@ -26,20 +21,8 @@ import java.math.BigDecimal;
 @Slf4j
 @AutoValidate
 public class WalletService {
-    private final PaymentService paymentService;
     private final WalletRepository walletRepository;
     private final WalletTransactionRepository walletTransactionRepository;
-
-    @Transactional
-    public WalletTopupResponse initiateTopup(String userId, WalletTopupRequest request) {
-        Payment payment = paymentService.initPayment(PaymentInitRequest.builder().userId(userId).gateway(request.getPaymentGateway()).amount(request.getAmount()).paymentPurpose(PaymentPurpose.WALLET_RECHARGE).build());
-        log.info("Wallet topup initiated userId={}, paymentId={}, amount={}", userId, payment.getId(), request.getAmount());
-        return WalletTopupResponse.builder()
-                .paymentId(payment.getId())
-                .amount(request.getAmount())
-                .message("Wallet topup initiated. Complete payment.")
-                .build();
-    }
 
     @Transactional
     public Wallet getOrCreateWallet(String userId) {
@@ -50,30 +33,29 @@ public class WalletService {
             return wallet;
         });
     }
-
     @Transactional
-    public void creditWallet(String userId, BigDecimal amount, String referenceType, String referenceId) {
-        if (amount == null || amount.signum() <= 0) {
+    public void creditWallet(CreditDebitWalletRequest request) {
+        if (request.getAmount() == null || request.getAmount() .signum() <= 0) {
             throw new CustomException(ErrorCode.INVALID_AMOUNT);
         }
-        Wallet wallet = getOrCreateWallet(userId);
-        wallet.setBalance(wallet.getBalance().add(amount));
+        Wallet wallet = getOrCreateWallet(request.getUserId());
+        wallet.setBalance(wallet.getBalance().add(request.getAmount()));
         walletRepository.save(wallet);
-        walletTransactionRepository.save(WalletTransaction.builder().userId(userId).amount(amount).type(TransactionType.CREDIT).referenceType(referenceType).referenceId(referenceId).balanceAfterTransaction(wallet.getBalance()).build());
+        walletTransactionRepository.save(WalletTransaction.builder().userId(request.getUserId()).amount(request.getAmount()).type(TransactionType.CREDIT).referenceType(request.getReferenceType()).referenceId(request.getReferenceId()).balanceAfterTransaction(wallet.getBalance()).build());
     }
 
     @Transactional
-    public void debitWallet(String userId, BigDecimal amount, String referenceType, String referenceId) {
-        if (amount == null || amount.signum() <= 0) {
+    public void debitWallet(CreditDebitWalletRequest request) {
+        if (request.getAmount() == null || request.getAmount() .signum() <= 0) {
             throw new CustomException(ErrorCode.INVALID_AMOUNT);
         }
-        Wallet wallet = walletRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.WALLET_NOT_FOUND));
-        if (wallet.getBalance().compareTo(amount) < 0) {
+        Wallet wallet = walletRepository.findByUserId(request.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.WALLET_NOT_FOUND));
+        if (wallet.getBalance().compareTo(request.getAmount()) < 0) {
             throw new CustomException(ErrorCode.INSUFFICIENT_WALLET_BALANCE);
         }
-        wallet.setBalance(wallet.getBalance().subtract(amount));
+        wallet.setBalance(wallet.getBalance().subtract(request.getAmount()));
         walletRepository.save(wallet);
-        walletTransactionRepository.save(WalletTransaction.builder().userId(userId).amount(amount).type(TransactionType.DEBIT).referenceType(referenceType).referenceId(referenceId).balanceAfterTransaction(wallet.getBalance()).build());
+        walletTransactionRepository.save(WalletTransaction.builder().userId(request.getUserId()).amount(request.getAmount()).type(TransactionType.DEBIT).referenceType(request.getReferenceType()).referenceId(request.getReferenceId()).balanceAfterTransaction(wallet.getBalance()).build());
     }
 }
 

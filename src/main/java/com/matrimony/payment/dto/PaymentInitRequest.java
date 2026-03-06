@@ -22,6 +22,6 @@ public class PaymentInitRequest {
     @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount must be greater than 0")
     private BigDecimal amount;
-    @NotBlank(message = "Gateway cannot be blank")
+    @NotNull(message = "Gateway cannot be blank")
     private PaymentGateWay gateway;
 }

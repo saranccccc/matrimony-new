@@ -7,6 +7,7 @@ import com.matrimony.subscription.entity.Subscription;
 import com.matrimony.subscription.repository.SubscriptionRepository;
 import com.matrimony.unlock.entity.ContactUnlock;
 import com.matrimony.unlock.repository.ContactUnlockRepository;
+import com.matrimony.wallet.dto.CreditDebitWalletRequest;
 import com.matrimony.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,47 +26,34 @@ public class ContactUnlockService {
 
     @Transactional
     public void unlockContact(String requesterId, String targetId) {
-
         if (requesterId.equals(targetId)) {
             throw new CustomException(ErrorCode.INVALID_OPERATION);
         }
-
         // Check already unlocked
         if (unlockRepository.findByRequesterUserIdAndTargetUserId(requesterId, targetId).isPresent()) {
             return; // already unlocked
         }
-
         Optional<Subscription> subscriptionOpt = subscriptionRepository.findByUserIdAndStatus(requesterId, SubscriptionStatus.ACTIVE);
-
         BigDecimal cost;
         String paymentSource;
         Long subscriptionId = null;
         Long walletTxId = null;
 
         if (subscriptionOpt.isPresent() && subscriptionOpt.get().getRemainingContactViews() > 0) {
-
             Subscription subscription = subscriptionOpt.get();
-
             subscription.setRemainingContactViews(subscription.getRemainingContactViews() - 1);
-
             subscriptionRepository.save(subscription);
-
             cost = BigDecimal.ZERO;
             paymentSource = "SUBSCRIPTION";
             subscriptionId = subscription.getId();
 
         } else {
-
             boolean hasActiveSubscription = subscriptionOpt.isPresent();
-
             cost = hasActiveSubscription ? new BigDecimal("100") : new BigDecimal("150");
             // todo need to get value from admin
-
-            walletService.debitWallet(requesterId, cost, "CONTACT_UNLOCK", targetId);
-
+            walletService.debitWallet(CreditDebitWalletRequest.builder().userId(requesterId).amount(cost).referenceType("CONTACT_UNLOCK").referenceId(targetId).build());
             paymentSource = "WALLET";
         }
-
         unlockRepository.save(ContactUnlock.builder().requesterUserId(requesterId).targetUserId(targetId).amountCharged(cost).paymentSource(paymentSource).subscriptionId(subscriptionId).walletTransactionId(walletTxId).build());
     }
 }
