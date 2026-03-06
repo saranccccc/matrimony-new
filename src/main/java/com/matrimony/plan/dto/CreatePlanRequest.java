@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 @Setter
 @Data
 public class CreatePlanRequest {
-
     private String name;
     private String description;
     private BigDecimal price;

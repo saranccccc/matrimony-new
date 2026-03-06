@@ -1,5 +1,6 @@
 package com.matrimony.payment.repository;
 
+import com.matrimony.payment.dto.PaymentStatus;
 import com.matrimony.payment.entity.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +12,9 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     Optional<Payment> findByTransactionId(String transactionId);
 
     List<Payment> findByUserId(String userId);
+
+    Optional<Payment> findByIdAndUserId(Long id, String userId);
+
+    long countByUserIdAndStatusAndPurpose(String userId, PaymentStatus status, String purpose);
+
 }

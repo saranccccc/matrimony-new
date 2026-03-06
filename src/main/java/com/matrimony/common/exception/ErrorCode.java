@@ -35,18 +35,21 @@ public enum ErrorCode {
 
 
     PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "Plan not found"),
-    CONTACT_LIMIT_EXHAUSTED(HttpStatus.BAD_REQUEST, "Contact limit exhausted"),
-
+    PLAN_INACTIVE(HttpStatus.NOT_FOUND, "Plan in active"),
+    CONTACT_QUOTA_EXHAUSTED(HttpStatus.BAD_REQUEST, "Contact limit exhausted"),
+    MESSAGE_QUOTA_EXHAUSTED(HttpStatus.BAD_REQUEST, "Message limit exhausted"),
 
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment not found"),
-
+    PAYMENT_ALREADY_SUCCESS(HttpStatus.BAD_REQUEST, "Payment already success"),
+    PAYMENT_ALREADY_FAILED(HttpStatus.BAD_REQUEST, "Payment already failed"),
 
     WALLET_NOT_FOUND(HttpStatus.NOT_FOUND, "Wallet not found"),
     INSUFFICIENT_WALLET_BALANCE(HttpStatus.FORBIDDEN, "Insufficient balance"),
 
-
+    SUBSCRIPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Subscription not found"),
+    SUBSCRIPTION_EXPIRED(HttpStatus.NOT_FOUND, "Subscription expired"),
     INVALID_OPERATION(HttpStatus.BAD_REQUEST, "Invalid Operation"),
-
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Request"),
     PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "Profile not found"),
     PROFILE_NOT_APPROVED(HttpStatus.UNAUTHORIZED, "Profile not approved"),
 
@@ -68,6 +71,7 @@ public enum ErrorCode {
     PHOTO_TOO_LARGE(HttpStatus.BAD_REQUEST, "Max file size is 1MB"),
     INVALID_PHOTO_TYPE(HttpStatus.BAD_REQUEST, " Only JPG/PNG/WEBP images are allowed"),
     INVALID_OPERATION_PHOTO(HttpStatus.BAD_REQUEST, "Primary photo cant be deleted"),
+    INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "Invalid Amount"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
 
 

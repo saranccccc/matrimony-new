@@ -1,5 +1,7 @@
 package com.matrimony.plan.service;
 
+import com.matrimony.common.exception.CustomException;
+import com.matrimony.common.exception.ErrorCode;
 import com.matrimony.plan.dto.CreatePlanRequest;
 import com.matrimony.plan.dto.PlanResponse;
 import com.matrimony.plan.entity.Plan;
@@ -53,5 +55,9 @@ public class PlanService {
                 .chatEnabled(plan.getChatEnabled())
                 .profileBoostEnabled(plan.getProfileBoostEnabled())
                 .build();
+    }
+
+    public Plan getActivePlan(Long planId){
+       return planRepository.findByIdAndActiveTrue(planId).orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
     }
 }

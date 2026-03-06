@@ -1,12 +1,15 @@
 package com.matrimony.payment.controller;
 
-import com.matrimony.payment.entity.Payment;
+import com.matrimony.auth.security.CustomUserDetails;
+import com.matrimony.common.dto.Result;
+import com.matrimony.payment.dto.PaymentResponse;
 import com.matrimony.payment.service.PaymentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,13 +20,17 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
-    @PostMapping("/subscription/{planId}")
-    public ResponseEntity<Payment> createSubscriptionPayment(
-            @PathVariable Long planId,
-            @RequestHeader("X-USER-ID") String userId) {
-
-        return ResponseEntity.ok(
-                paymentService.createSubscriptionPayment(userId, planId)
-        );
+    @PostMapping("/success")
+    public ResponseEntity<Result> success(@AuthenticationPrincipal CustomUserDetails user, @Valid @RequestBody PaymentResponse paymentResponse) {
+        paymentResponse.setUserId(user.getUserId());
+        paymentService.markPaymentSuccess(paymentResponse);
+        return ResponseEntity.ok(Result.builder().status(1).description("PAYMENT_SUCCESS").build());
     }
+
+    @PostMapping("/failed")
+    public ResponseEntity<Result> failed(@AuthenticationPrincipal CustomUserDetails user, @Valid @RequestBody PaymentResponse paymentResponse) {
+        paymentService.markPaymentFailed(paymentResponse);
+        return ResponseEntity.ok(Result.builder().status(1).description("PAYMENT_FAILED").build());
+    }
+
 }

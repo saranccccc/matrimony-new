@@ -89,22 +89,25 @@ ALTER TABLE plans
 CREATE TABLE subscriptions
 (
     id                      BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id                 VARCHAR(100)   NOT NULL,
+    user_id                 CHAR(26)       NOT NULL,
     plan_id                 BIGINT         NOT NULL,
     plan_name               VARCHAR(100)   NOT NULL,
-    price                   DECIMAL(10, 2) NOT NULL,
+    price                   DECIMAL(12, 2) NOT NULL,
     start_date              TIMESTAMP      NOT NULL,
     expiry_date             TIMESTAMP      NOT NULL,
     total_contact_limit     INT            NOT NULL,
     remaining_contact_views INT            NOT NULL,
     total_message_limit     INT            NOT NULL,
     remaining_messages      INT            NOT NULL,
-    status                  VARCHAR(20)    NOT NULL,
+    status                  VARCHAR(30)    NOT NULL,
     created_at              TIMESTAMP      NOT NULL,
-    updated_at              TIMESTAMP      NULL
+    updated_at              TIMESTAMP      NULL,
+    created_by              varchar(255) DEFAULT NULL,
+    updated_by              varchar(255) DEFAULT NULL
 );
 
 CREATE INDEX idx_subscriptions_user_id ON subscriptions (user_id);
+CREATE INDEX idx_sub_user_status ON subscriptions (user_id, status);
 CREATE INDEX idx_subscriptions_status ON subscriptions (status);
 CREATE INDEX idx_subscriptions_expiry ON subscriptions (expiry_date);
 
@@ -112,16 +115,18 @@ CREATE INDEX idx_subscriptions_expiry ON subscriptions (expiry_date);
 CREATE TABLE payments
 (
     id              BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id         VARCHAR(100)   NOT NULL,
+    user_id         VARCHAR(26)    NOT NULL,
     plan_id         BIGINT         NULL,
-    amount          DECIMAL(10, 2) NOT NULL,
-    transaction_id  VARCHAR(255),
-    payment_gateway VARCHAR(100),
-    status          VARCHAR(20)    NOT NULL,
+    amount          DECIMAL(12, 2) NOT NULL,
+    transaction_id  VARCHAR(100),
+    payment_gateway VARCHAR(30),
+    status          VARCHAR(30)    NOT NULL,
     purpose         VARCHAR(50)    NOT NULL,
     payment_date    TIMESTAMP      NULL,
     created_at      TIMESTAMP      NOT NULL,
-    updated_at      TIMESTAMP      NULL
+    updated_at      TIMESTAMP      NULL,
+    created_by      VARCHAR(255) DEFAULT NULL,
+    updated_by      VARCHAR(255) DEFAULT NULL
 );
 
 CREATE INDEX idx_payments_user_id ON payments (user_id);

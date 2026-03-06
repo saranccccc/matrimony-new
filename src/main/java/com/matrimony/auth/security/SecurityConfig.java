@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         // Public
-                        .requestMatchers("/api/v1/auth/**", "/api/v1/test/**", "/actuator/health").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/api/v1/test/**", "/actuator/health","/api/v1/pub/**").permitAll()
                         // Admin APIs
                         .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN_REQUESTER", "ADMIN_APPROVER")
                         // User APIs
