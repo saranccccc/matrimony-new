@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 @Setter
 @Builder
 public class PaymentInitRequest {
-    @NotBlank(message = "UserId cannot be blank")
     private String userId;
     private Long planId;
     @NotBlank(message = "PaymentPurpose cannot be blank")

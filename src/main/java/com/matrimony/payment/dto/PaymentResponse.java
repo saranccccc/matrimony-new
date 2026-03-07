@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PaymentResponse {
-    @NotBlank(message = "UserId cannot be blank")
     private String userId;
     @NotNull(message = "PaymentId cannot be blank")
     private Long paymentId;
