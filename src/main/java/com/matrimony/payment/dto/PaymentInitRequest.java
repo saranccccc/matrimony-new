@@ -17,7 +17,7 @@ public class PaymentInitRequest {
     private String userId;
     private Long planId;
     @NotBlank(message = "PaymentPurpose cannot be blank")
-    private PaymentPurpose paymentPurpose;
+    private PaymentReferenceType paymentReferenceType;
     @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount must be greater than 0")
     private BigDecimal amount;

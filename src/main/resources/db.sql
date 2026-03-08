@@ -114,19 +114,19 @@ CREATE INDEX idx_subscriptions_expiry ON subscriptions (expiry_date);
 
 CREATE TABLE payments
 (
-    id              BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id         VARCHAR(26)    NOT NULL,
-    plan_id         BIGINT         NULL,
-    amount          DECIMAL(12, 2) NOT NULL,
-    transaction_id  VARCHAR(100),
-    payment_gateway VARCHAR(30),
-    status          VARCHAR(30)    NOT NULL,
-    purpose         VARCHAR(50)    NOT NULL,
-    payment_date    TIMESTAMP      NULL,
-    created_at      TIMESTAMP      NOT NULL,
-    updated_at      TIMESTAMP      NULL,
-    created_by      VARCHAR(255) DEFAULT NULL,
-    updated_by      VARCHAR(255) DEFAULT NULL
+    id                     BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id                VARCHAR(26)    NOT NULL,
+    plan_id                BIGINT         NULL,
+    amount                 DECIMAL(12, 2) NOT NULL,
+    transaction_id         VARCHAR(100),
+    payment_gateway        VARCHAR(30),
+    status                 VARCHAR(30)    NOT NULL,
+    payment_reference_type VARCHAR(50)    NOT NULL,
+    payment_date           TIMESTAMP      NULL,
+    created_at             TIMESTAMP      NOT NULL,
+    updated_at             TIMESTAMP      NULL,
+    created_by             VARCHAR(255) DEFAULT NULL,
+    updated_by             VARCHAR(255) DEFAULT NULL
 );
 
 CREATE INDEX idx_payments_user_id ON payments (user_id);
@@ -173,6 +173,7 @@ CREATE TABLE contact_unlocks
     target_user_id        VARCHAR(100)   NOT NULL,
     amount_charged        DECIMAL(12, 2) NOT NULL,
     payment_source        VARCHAR(50)    NOT NULL,
+    payment_id            BIGINT         NULL,
     subscription_id       BIGINT         NULL,
     wallet_transaction_id BIGINT         NULL,
     created_at            TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,

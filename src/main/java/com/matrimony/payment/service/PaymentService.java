@@ -4,7 +4,7 @@ import com.matrimony.common.exception.CustomException;
 import com.matrimony.common.exception.ErrorCode;
 import com.matrimony.common.validator.AutoValidate;
 import com.matrimony.payment.dto.PaymentInitRequest;
-import com.matrimony.payment.dto.PaymentPurpose;
+import com.matrimony.payment.dto.PaymentReferenceType;
 import com.matrimony.payment.dto.PaymentResponse;
 import com.matrimony.payment.dto.PaymentStatus;
 import com.matrimony.payment.entity.Payment;
@@ -43,7 +43,7 @@ public class PaymentService {
         log.info("2. Check plan details");
         Plan plan= planService.getActivePlan(request.getPlanId());
         log.info("3. Initiate the payment");
-        Payment payment= initPayment(PaymentInitRequest.builder().userId(request.getUserId()).planId(request.getPlanId()).gateway(request.getPaymentGateway()).amount(plan.getPrice()).paymentPurpose(PaymentPurpose.SUBSCRIPTION).build());
+        Payment payment= initPayment(PaymentInitRequest.builder().userId(request.getUserId()).planId(request.getPlanId()).gateway(request.getPaymentGateway()).amount(plan.getPrice()).paymentReferenceType(PaymentReferenceType.SUBSCRIPTION).build());
         log.info("4. Subscription payment initiated userId={}, planId={}, paymentId={}", request.getUserId(), request.getPlanId(), payment.getId());
         return PurchaseSubscriptionResponse.builder()
                 .paymentId(payment.getId())
@@ -55,7 +55,7 @@ public class PaymentService {
 
     @Transactional
     public WalletTopupResponse initiateWalletTopup(WalletTopupRequest request) {
-        Payment payment = initPayment(PaymentInitRequest.builder().userId(request.getUserId()).gateway(request.getPaymentGateway()).amount(request.getAmount()).paymentPurpose(PaymentPurpose.WALLET_RECHARGE).build());
+        Payment payment = initPayment(PaymentInitRequest.builder().userId(request.getUserId()).gateway(request.getPaymentGateway()).amount(request.getAmount()).paymentReferenceType(PaymentReferenceType.WALLET_RECHARGE).build());
         log.info("Wallet topup initiated userId={}, paymentId={}, amount={}", request.getUserId(), payment.getId(), request.getAmount());
         return WalletTopupResponse.builder()
                 .paymentId(payment.getId())
@@ -68,9 +68,9 @@ public class PaymentService {
                 .userId(paymentInitRequest.getUserId())
                 .planId(paymentInitRequest.getPlanId())
                 .amount(paymentInitRequest.getAmount())
-                .paymentGateway(paymentInitRequest.getGateway().name())
+                .paymentGateway(paymentInitRequest.getGateway())
                 .status(PaymentStatus.INITIATED)
-                .purpose(paymentInitRequest.getPaymentPurpose().name())
+                .paymentReferenceType(paymentInitRequest.getPaymentReferenceType())
                 .paymentDate(null)
                 .transactionId(null)
                 .build();
@@ -85,10 +85,12 @@ public class PaymentService {
         log.info("Payment marked SUCCESS userId={}, paymentId={}, txn={}", paymentResponse.getUserId(), paymentResponse.getPaymentId(), paymentResponse.getTransactionId());
 
         // Purpose-based action
-        if (PaymentPurpose.SUBSCRIPTION.name().equals(payment.getPurpose())) {
+        if (PaymentReferenceType.SUBSCRIPTION.equals(payment.getPaymentReferenceType())) {
             subscriptionService.activateSubscriptionFromPayment(ActivateSubscriptionRequest.builder().userId(paymentResponse.getUserId()).planId(payment.getPlanId()).build());
-        } else if (PaymentPurpose.WALLET_RECHARGE.name().equals(payment.getPurpose())) {
+        } else if (PaymentReferenceType.WALLET_RECHARGE.equals(payment.getPaymentReferenceType())) {
              walletService.creditWallet( CreditDebitWalletRequest.builder().userId(paymentResponse.getUserId()).amount(payment.getAmount()).referenceType("WALLET_RECHARGE").referenceId(paymentResponse.getTransactionId()).build());
+        } else if (PaymentReferenceType.CONTACT_UNLOCK.equals(payment.getPaymentReferenceType())) {
+            walletService.creditWallet( CreditDebitWalletRequest.builder().userId(paymentResponse.getUserId()).amount(payment.getAmount()).referenceType("WALLET_RECHARGE").referenceId(paymentResponse.getTransactionId()).build());
         }
     }
 

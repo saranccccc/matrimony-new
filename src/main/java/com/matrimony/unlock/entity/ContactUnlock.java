@@ -1,6 +1,7 @@
 package com.matrimony.unlock.entity;
 
 import com.matrimony.common.entity.BaseEntity;
+import com.matrimony.unlock.dto.PaymentSource;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,8 +34,10 @@ public class ContactUnlock extends BaseEntity {
 
     private BigDecimal amountCharged;
 
-    private String paymentSource;
+    private PaymentSource paymentSource;
     // SUBSCRIPTION / WALLET
+
+    private Long paymentId;
 
     private Long subscriptionId; // nullable
 

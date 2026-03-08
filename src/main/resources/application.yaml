@@ -59,3 +59,10 @@ aws:
     region: ap-southeast-1
     table-name: matrimony-users
     endpoint: http://localhost:8000
+
+pricing:
+  subscriber-contact-price: 100
+  non-subscriber-contact-price: 150
+
+
+

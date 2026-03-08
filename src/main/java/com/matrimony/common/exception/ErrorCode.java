@@ -38,6 +38,9 @@ public enum ErrorCode {
     PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "Plan not found"),
     PLAN_INACTIVE(HttpStatus.NOT_FOUND, "Plan in active"),
     CONTACT_QUOTA_EXHAUSTED(HttpStatus.BAD_REQUEST, "Contact limit exhausted"),
+    CONTACT_ALREADY_UNLOCKED(HttpStatus.BAD_REQUEST, "Contact already unlocked"),
+    CONTACT_UNLOCK_PAYMENT_REQUIRED(HttpStatus.BAD_REQUEST, "Contact unlock payment required"),
+    CONTACT_UNLOCK_NOT_FOUND(HttpStatus.BAD_REQUEST, "Contact unlock not found"),
     MESSAGE_QUOTA_EXHAUSTED(HttpStatus.BAD_REQUEST, "Message limit exhausted"),
 
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment not found"),

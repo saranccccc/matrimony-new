@@ -1,6 +1,8 @@
 package com.matrimony.payment.entity;
 
 import com.matrimony.common.entity.BaseEntity;
+import com.matrimony.payment.dto.PaymentGateWay;
+import com.matrimony.payment.dto.PaymentReferenceType;
 import com.matrimony.payment.dto.PaymentStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -39,12 +41,12 @@ public class Payment extends BaseEntity {
 
     private String transactionId; // from payment gateway
 
-    private String paymentGateway; // RAZORPAY, STRIPE, etc.
+    private PaymentGateWay paymentGateway; // RAZORPAY, STRIPE, etc.
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    private String purpose;
+    private PaymentReferenceType paymentReferenceType;
     // SUBSCRIPTION / WALLET / CONTACT_UNLOCK
 
     private LocalDateTime paymentDate;
