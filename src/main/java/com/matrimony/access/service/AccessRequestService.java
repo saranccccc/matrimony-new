@@ -35,8 +35,8 @@ public class AccessRequestService {
     }
 
     @Transactional
-    public void respondRequest(Long requestId, String ownerId, AccessRequestStatus status) {
-        AccessRequest request = repository.findById(requestId).orElseThrow(() -> new CustomException(ErrorCode.REQUEST_NOT_FOUND));
+    public void respondRequest(Long requesterId, String ownerId, AccessRequestStatus status) {
+        AccessRequest request = repository.findById(requesterId).orElseThrow(() -> new CustomException(ErrorCode.REQUEST_NOT_FOUND));
         if (!request.getOwnerUserId().equals(ownerId)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
@@ -58,6 +58,10 @@ public class AccessRequestService {
     }
 
     public Page<AccessRequest> getPendingRequests(String ownerId, Pageable pageable) {
+        return getRequests(ownerId, AccessRequestStatus.PENDING, pageable);
+    }
+
+    public Page<AccessRequest> getRequests(String ownerId, AccessRequestStatus AccessRequestStatus, Pageable pageable) {
         return repository.findByOwnerUserIdAndStatus(ownerId, AccessRequestStatus.PENDING, pageable);
     }
 }

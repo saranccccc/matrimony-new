@@ -30,21 +30,18 @@ public class AdminModerationController {
     @PostMapping("/request/profile/{userId}/approve")
     @PreAuthorize("hasRole('ADMIN_REQUESTER')")
     public void requestProfileApproval(@AuthenticationPrincipal CustomUserDetails admin, @PathVariable String userId, @RequestParam(required = false) String remarks) {
-
         moderationService.createRequest(ModerationAction.APPROVE_PROFILE, userId, null, admin.getUserId(), remarks);
     }
 
     @PostMapping("/request/profile/{userId}/reject")
     @PreAuthorize("hasRole('ADMIN_REQUESTER')")
     public void requestProfileRejection(@AuthenticationPrincipal CustomUserDetails admin, @PathVariable String userId, @RequestParam(required = false) String remarks) {
-
         moderationService.createRequest(ModerationAction.REJECT_PROFILE, userId, null, admin.getUserId(), remarks);
     }
 
     @PostMapping("/request/user/{userId}/block")
     @PreAuthorize("hasRole('ADMIN_REQUESTER')")
     public void requestBlockUser(@AuthenticationPrincipal CustomUserDetails admin, @PathVariable String userId, @RequestParam(required = false) String remarks) {
-
         moderationService.createRequest(ModerationAction.BLOCK_USER, userId, null, admin.getUserId(), remarks);
     }
 
@@ -54,7 +51,6 @@ public class AdminModerationController {
     @GetMapping("/pending")
     @PreAuthorize("hasRole('ADMIN_APPROVER')")
     public Page<ModerationRequest> getPendingRequests(Pageable pageable) {
-
         return moderationService.getPendingRequests(pageable);
     }
 
@@ -64,7 +60,6 @@ public class AdminModerationController {
     @PutMapping("/{requestId}/approve")
     @PreAuthorize("hasRole('ADMIN_APPROVER')")
     public void approveRequest(@AuthenticationPrincipal CustomUserDetails admin, @PathVariable Long requestId) {
-
         moderationService.approveRequest(requestId, admin.getUserId());
     }
 
@@ -74,7 +69,6 @@ public class AdminModerationController {
     @PutMapping("/{requestId}/reject")
     @PreAuthorize("hasRole('ADMIN_APPROVER')")
     public void rejectRequest(@AuthenticationPrincipal CustomUserDetails admin, @PathVariable Long requestId) {
-
         moderationService.rejectRequest(requestId, admin.getUserId());
     }
 }

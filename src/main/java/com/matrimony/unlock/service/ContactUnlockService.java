@@ -32,6 +32,7 @@ public class ContactUnlockService {
     private final SubscriptionRepository subscriptionRepository;
     private final PricingProperty pricingProperty;
     private final PaymentRepository paymentRepository;
+
     @Transactional
     public ContactUnlockInitiateResponse unlockContact(String requesterUserId, String targetUserId) {
         if (requesterUserId.equals(targetUserId)) {
@@ -60,7 +61,7 @@ public class ContactUnlockService {
 
         BigDecimal amount = activeSubscription != null ? pricingProperty.getSubscriberContactPrice() : pricingProperty.getNonSubscriberContactPrice();
 
-       Payment payment = Payment.builder().userId(requesterUserId).planId(null).amount(amount).paymentGateway(PaymentGateWay.MOCK).status(PaymentStatus.INITIATED).paymentReferenceType(PaymentReferenceType.CONTACT_UNLOCK).transactionId(targetUserId) // temporary store targetUserId reference
+        Payment payment = Payment.builder().userId(requesterUserId).planId(null).amount(amount).paymentGateway(PaymentGateWay.MOCK).status(PaymentStatus.INITIATED).paymentReferenceType(PaymentReferenceType.CONTACT_UNLOCK).transactionId(targetUserId) // temporary store targetUserId reference
                 .paymentDate(null).build();
 
         paymentRepository.save(payment);

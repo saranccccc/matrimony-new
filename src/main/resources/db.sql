@@ -388,4 +388,6 @@ CREATE TABLE moderation_requests
 );
 
 CREATE INDEX idx_moderation_status ON moderation_requests (status);
+CREATE INDEX idx_moderation_target_user ON moderation_requests(target_user_id);
+CREATE INDEX idx_moderation_target_photo ON moderation_requests(target_photo_id);
 

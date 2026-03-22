@@ -41,4 +41,9 @@ public class AccessRequestController {
     public Page<AccessRequest> received(@AuthenticationPrincipal CustomUserDetails user, Pageable pageable) {
         return service.getPendingRequests(user.getUserId(), pageable);
     }
+
+    @GetMapping("/sent")
+    public Page<AccessRequest> sent(@AuthenticationPrincipal CustomUserDetails user, Pageable pageable) {
+        return service.getPendingRequests(user.getUserId(), pageable);
+    }
 }
