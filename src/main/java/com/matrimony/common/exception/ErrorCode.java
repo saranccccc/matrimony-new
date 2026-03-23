@@ -76,8 +76,11 @@ public enum ErrorCode {
     INVALID_PHOTO_TYPE(HttpStatus.BAD_REQUEST, " Only JPG/PNG/WEBP images are allowed"),
     INVALID_OPERATION_PHOTO(HttpStatus.BAD_REQUEST, "Primary photo cant be deleted"),
     INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "Invalid Amount"),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"),
 
+    MODERATION_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, " MODERATION not found"),
+    MODERATION_ALREADY_PROCESSED(HttpStatus.BAD_REQUEST, " MODERATION already exists"),
+    MODERATION_SELF_APPROVAL_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "Not allowed");
 
     private final HttpStatus httpStatus;
     private final String message;

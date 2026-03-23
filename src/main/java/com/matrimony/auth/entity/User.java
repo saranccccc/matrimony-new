@@ -3,7 +3,6 @@ package com.matrimony.auth.entity;
 import com.matrimony.admin.dto.Role;
 import com.matrimony.common.entity.BaseEntity;
 import com.matrimony.common.util.UlidGenerated;
-import com.matrimony.user.dto.ProfileStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -46,12 +45,6 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
-
-    @Enumerated(EnumType.STRING)
-    private ProfileStatus profileStatus;
-
-    @Column(name = "is_blocked", nullable = false)
-    private Boolean isBlocked = Boolean.FALSE;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

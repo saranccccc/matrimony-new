@@ -109,4 +109,10 @@ public class UserPhotoService {
         }
     }
 
+    @Transactional
+    public void updateStatus(Long photoId, PhotoStatus status) {
+        UserPhoto photo = photoRepository.findById(photoId).orElseThrow(() -> new CustomException(ErrorCode.PHOTO_NOT_FOUND));
+        photo.setStatus(status);
+        log.info("Photo status updated photoId={}, status={}", photoId, status);
+    }
 }

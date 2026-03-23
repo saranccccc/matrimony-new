@@ -61,4 +61,11 @@ public class UserProfileService {
     private UserProfileResponse mapToResponse(UserProfile profile) {
         return UserProfileResponse.builder().userId(profile.getUserId()).firstName(profile.getFirstName()).lastName(profile.getLastName()).age(profile.getAge()).gender(profile.getGender()).religion(profile.getReligion()).caste(profile.getCaste()).subCaste(profile.getSubCaste()).education(profile.getEducation()).profession(profile.getProfession()).city(profile.getCity()).state(profile.getState()).country(profile.getCountry()).aboutMe(profile.getAboutMe()).status(profile.getStatus()).profileCompleted(profile.getProfileCompleted()).build();
     }
+
+    @Transactional
+    public void updateStatus(String userId, ProfileStatus status) {
+        UserProfile profile = profileRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.PROFILE_NOT_FOUND));
+        profile.setStatus(status);
+        log.info("Profile status updated userId={}, status={}", userId, status);
+    }
 }

@@ -43,7 +43,7 @@ public class CredentialService {
         }
 
         log.info("Check user is blocked");
-        if (user.getIsBlocked()) {
+        if (UserStatus.BLOCKED == user.getUserStatus()) {
             throw new CustomException(ErrorCode.USER_BLOCKED);
         }
 

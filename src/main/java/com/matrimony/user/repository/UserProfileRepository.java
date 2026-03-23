@@ -17,4 +17,6 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long>,
 
     Page<UserProfile> findByStatus(ProfileStatus status, Pageable pageable);
 
+    long countByUserIdAndStatus(String userId, ProfileStatus status);
+
 }
