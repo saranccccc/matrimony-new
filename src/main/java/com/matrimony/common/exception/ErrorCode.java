@@ -56,6 +56,8 @@ public enum ErrorCode {
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Request"),
     PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "Profile not found"),
     PROFILE_NOT_APPROVED(HttpStatus.UNAUTHORIZED, "Profile not approved"),
+    PROFILE_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "profile not ready for review"),
+
 
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Invalid action"),
     INTEREST_NOT_FOUND(HttpStatus.NOT_FOUND, "Interest not found"),
@@ -79,8 +81,11 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"),
 
     MODERATION_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, " MODERATION not found"),
-    MODERATION_ALREADY_PROCESSED(HttpStatus.BAD_REQUEST, " MODERATION already exists"),
+    MODERATION_REQUEST_EXISTS(HttpStatus.NOT_FOUND, " MODERATION request already exists"),
+    MODERATION_ALREADY_PROCESSED(HttpStatus.BAD_REQUEST, " MODERATION already processed"),
+    MODERATION_REQUEST_NOT_VALID(HttpStatus.BAD_REQUEST, "Moderation request not valid"),
     MODERATION_SELF_APPROVAL_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "Not allowed");
+
 
     private final HttpStatus httpStatus;
     private final String message;
@@ -89,4 +94,34 @@ public enum ErrorCode {
         this.httpStatus = httpStatus;
         this.message = message;
     }
+
+    /**
+     *
+     *  PROFILE_NOT_FOUND("PROFILE_001", "Profile not found", HttpStatus.NOT_FOUND),
+     *     PROFILE_NOT_COMPLETED("PROFILE_002", "Profile is not completed", HttpStatus.BAD_REQUEST),
+     *     PROFILE_APPROVAL_ALREADY_PENDING("PROFILE_003", "Profile approval request is already pending", HttpStatus.BAD_REQUEST),
+     *
+     *     PHOTO_NOT_FOUND("PHOTO_001", "Photo not found", HttpStatus.NOT_FOUND),
+     *     PHOTO_ALREADY_PENDING_APPROVAL("PHOTO_002", "Photo is already pending approval", HttpStatus.BAD_REQUEST),
+     *     PHOTO_ALREADY_APPROVED("PHOTO_003", "Photo is already approved", HttpStatus.BAD_REQUEST),
+     *     INVALID_PHOTO_STATUS_FOR_APPROVAL("PHOTO_004", "Only pending approval photos can be approved", HttpStatus.BAD_REQUEST),
+     *     INVALID_PHOTO_STATUS_FOR_REJECTION("PHOTO_005", "Only pending approval photos can be rejected", HttpStatus.BAD_REQUEST),
+     *     INVALID_PHOTO_STATUS_FOR_RAISE_APPROVAL("PHOTO_006", "Only uploaded or rejected photos can be raised for approval", HttpStatus.BAD_REQUEST),
+     *     PHOTO_APPROVAL_ALREADY_PENDING("PHOTO_007", "Photo approval request is already pending", HttpStatus.BAD_REQUEST),
+     *
+     *     MODERATION_REQUEST_NOT_FOUND("MOD_001", "Moderation request not found", HttpStatus.NOT_FOUND),
+     *     MODERATION_REQUEST_NOT_PENDING("MOD_002", "Moderation request is not in pending state", HttpStatus.BAD_REQUEST),
+     *     INVALID_MODERATION_ACTION("MOD_003", "Invalid moderation action for this operation", HttpStatus.BAD_REQUEST);
+     *
+     *     private final String code;
+     *     private final String message;
+     *     private final HttpStatus httpStatus;
+     *
+     *     ErrorCode(String code, String message, HttpStatus httpStatus) {
+     *         this.code = code;
+     *         this.message = message;
+     *         this.httpStatus = httpStatus;
+     *     }
+     */
+
 }

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -42,8 +43,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<?> handleMaxUpload(MaxUploadSizeExceededException ex) {
+    public ResponseEntity<Map<String,String>> handleMaxUpload(MaxUploadSizeExceededException ex) {
         log.error("handleMaxUpload Exception: ", ex);
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(Map.of("errorCode", "FILE_TOO_LARGE", "message", "Uploaded file exceeds the configured upload limit."));
     }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
+        ErrorResponse response = ErrorResponse.builder().timestamp(java.time.LocalDateTime.now()).status(HttpStatus.FORBIDDEN.value()).errorCode(HttpStatus.FORBIDDEN.name()).message("Access denied: " + ex.getMessage()).build();
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(response);
+
+    }
+
 }

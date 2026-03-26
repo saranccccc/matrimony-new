@@ -7,10 +7,12 @@ import com.matrimony.admin.repository.ModerationRepository;
 import com.matrimony.common.exception.CustomException;
 import com.matrimony.common.exception.ErrorCode;
 import com.matrimony.photo.dto.PhotoStatus;
-import com.matrimony.photo.service.AdminPhotoService;
+import com.matrimony.photo.service.PhotoService;
 import com.matrimony.user.dto.ProfileStatus;
 import com.matrimony.user.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,27 +20,37 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional
 public class ModerationService {
-
     private final ModerationRepository moderationRepository;
     private final UserProfileService userProfileService;
     private final UserService userService;
-    private final AdminPhotoService photoService;
+    private final PhotoService photoService;
 
-    // ===============================
-    // REQUESTER CREATES REQUEST
-    // ===============================
-    @Transactional
-    public void createRequest(ModerationAction action, String targetUserId, Long targetPhotoId, String requesterId, String remarks) {
-        ModerationRequest request = ModerationRequest.builder().action(action).targetUserId(targetUserId).targetPhotoId(targetPhotoId).status(ModerationStatus.PENDING).requestedBy(requesterId).remarks(remarks).build();
-        moderationRepository.save(request);
+
+    public void findByActionAndTargetUserIdAndStatus(ModerationAction moderationAction,String  targetUserId, ModerationStatus status) {
+        moderationRepository.findByActionAndTargetUserIdAndStatus(moderationAction, targetUserId, status).ifPresent(request -> {
+            throw new CustomException(ErrorCode.MODERATION_REQUEST_EXISTS);
+        });
+    }
+
+    public ModerationRequest save(ModerationRequest request ){
+     return   moderationRepository.save(request);
+    }
+    public Page<ModerationRequest> findByStatus(ModerationStatus status, Pageable pageable) {
+        return  moderationRepository.findByStatus(status, pageable);
+    }
+
+    public ModerationRequest findById(Long id) {
+        return moderationRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.MODERATION_REQUEST_NOT_FOUND));
     }
 
     // ===============================
     // APPROVER GETS PENDING REQUESTS
     // ===============================
     public Page<ModerationRequest> getPendingRequests(Pageable pageable) {
-        return moderationRepository.findByStatus(ModerationStatus.PENDING, pageable);
+        return findByStatus(ModerationStatus.PENDING, pageable);
     }
 
     // ===============================
@@ -46,13 +58,13 @@ public class ModerationService {
     // ===============================
     @Transactional
     public void approveRequest(Long requestId, String approverId) {
-        ModerationRequest request = moderationRepository.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
+        ModerationRequest request = getModerationRequest(requestId);
         if (request.getStatus() != ModerationStatus.PENDING) {
-            throw  new CustomException(ErrorCode.MODERATION_ALREADY_PROCESSED);
+            throw new CustomException(ErrorCode.MODERATION_ALREADY_PROCESSED);
         }
         // Prevent self-approval
         if (request.getRequestedBy().equals(approverId)) {
-            throw  new CustomException(ErrorCode.MODERATION_SELF_APPROVAL_NOT_ALLOWED);
+            throw new CustomException(ErrorCode.MODERATION_SELF_APPROVAL_NOT_ALLOWED);
         }
         executeAction(request);
         request.setStatus(ModerationStatus.APPROVED);
@@ -64,19 +76,19 @@ public class ModerationService {
     // ===============================
     @Transactional
     public void rejectRequest(Long requestId, String approverId) {
-
-        ModerationRequest request = moderationRepository.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
-
+        ModerationRequest request = getModerationRequest(requestId);
         if (request.getStatus() != ModerationStatus.PENDING) {
-            throw  new CustomException(ErrorCode.MODERATION_ALREADY_PROCESSED);
+            throw new CustomException(ErrorCode.MODERATION_ALREADY_PROCESSED);
         }
-
         if (request.getRequestedBy().equals(approverId)) {
-            throw  new CustomException(ErrorCode.MODERATION_SELF_APPROVAL_NOT_ALLOWED);
+            throw new CustomException(ErrorCode.MODERATION_SELF_APPROVAL_NOT_ALLOWED);
         }
-
         request.setStatus(ModerationStatus.REJECTED);
         request.setApprovedBy(approverId);
+    }
+
+    private @NonNull ModerationRequest getModerationRequest(Long requestId) {
+        return findById(requestId);
     }
 
     // ===============================
@@ -95,6 +107,15 @@ public class ModerationService {
             case APPROVE_PHOTO -> photoService.updateStatus(request.getTargetPhotoId(), PhotoStatus.APPROVED);
 
             case REJECT_PHOTO -> photoService.updateStatus(request.getTargetPhotoId(), PhotoStatus.REJECTED);
+
+            default -> throw new CustomException(ErrorCode.INVALID_REQUEST);
         }
     }
+
+
+
+
+
+
+
 }

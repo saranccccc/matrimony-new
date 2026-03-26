@@ -318,8 +318,6 @@ CREATE TABLE `users`
     `mobile_no`      varchar(255) NOT NULL,
     `password_hash`  varchar(255) NOT NULL,
     `user_status`    enum ('ACTIVE','BLOCKED','OTP_PENDING')                         DEFAULT NULL,
-    `is_blocked`     tinyint(1)                                                      DEFAULT NULL,
-    `profile_status` enum ('DRAFT','COMPLETED','UNDER_REVIEW','APPROVED','REJECTED') DEFAULT NULL,
     `role`           enum ('USER','ADMIN_REQUESTER','ADMIN_APPROVER')                DEFAULT NULL,
     `created_at`     timestamp    NULL                                               DEFAULT CURRENT_TIMESTAMP,
     `created_by`     varchar(255)                                                    DEFAULT NULL,

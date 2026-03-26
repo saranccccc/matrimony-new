@@ -90,7 +90,7 @@ public class UserPhotoService {
 
     @Transactional
     public UserPhoto uploadPhoto(String userId, String photoUrl, PhotoVisibility visibility, Long count) {
-        UserPhoto photo = UserPhoto.builder().userId(userId).photoUrl(photoUrl).isPrimary(count == 0).status(PhotoStatus.PENDING_APPROVAL).visibility(visibility).isDeleted(false).build();
+        UserPhoto photo = UserPhoto.builder().userId(userId).photoUrl(photoUrl).isPrimary(count == 0).status(PhotoStatus.UPLOADED).visibility(visibility).isDeleted(false).build();
         return photoRepository.save(photo);
     }
 

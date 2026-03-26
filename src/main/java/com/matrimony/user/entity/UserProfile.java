@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -68,4 +69,17 @@ public class UserProfile extends BaseEntity {
     private Boolean isBoosted;
 
     private LocalDateTime boostExpiry;
+
+    @PrePersist
+    public void prePersist() {
+        if (status == null) {
+            status = ProfileStatus.DRAFT;
+        }
+        if (profileCompleted == null) {
+            profileCompleted = Boolean.FALSE;
+        }
+        if (isBoosted == null) {
+            isBoosted = Boolean.FALSE;
+        }
+    }
 }

@@ -41,8 +41,10 @@ public class UserProfileService {
         profile.setContactVisibility(request.getContactVisibility());
         boolean completed = isProfileComplete(profile);
         profile.setProfileCompleted(completed);
-        if (completed && profile.getStatus() == null) {
+        if (completed && (profile.getStatus() == null || ProfileStatus.DRAFT == profile.getStatus())) {
             profile.setStatus(ProfileStatus.COMPLETED);
+        } else{
+            profile.setStatus(ProfileStatus.DRAFT);
         }
         profileRepository.save(profile);
         log.info("Profile saved successfully for userId:{},", userId);

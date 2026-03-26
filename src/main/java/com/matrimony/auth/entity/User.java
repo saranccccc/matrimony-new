@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,4 +50,14 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role = Role.USER;
+
+    @PrePersist
+    public void prePersist() {
+        if (userStatus == null) {
+            userStatus = UserStatus.OTP_PENDING;
+        }
+        if (role == null) {
+            role = Role.USER;
+        }
+    }
 }
