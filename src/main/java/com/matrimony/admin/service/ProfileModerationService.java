@@ -18,7 +18,6 @@ public class ProfileModerationService {
 
 
     private final UserProfileService userProfileService;
-    private final UserService userService;
     private final ModerationService moderationService;
 
     // ===============================

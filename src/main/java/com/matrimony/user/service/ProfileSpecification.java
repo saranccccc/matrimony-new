@@ -18,7 +18,7 @@ public class ProfileSpecification {
             // Exclude self
             predicates.add(cb.notEqual(root.get("userId"), currentUserId));
             // Only approved/completed
-            predicates.add(root.get("status").in(ProfileStatus.APPROVED, ProfileStatus.COMPLETED));
+            predicates.add(root.get("status").in(ProfileStatus.APPROVED));
             if (request.getGender() != null) {
                 predicates.add(cb.equal(root.get("gender"), request.getGender()));
             }

@@ -9,6 +9,9 @@ import com.matrimony.user.entity.UserProfile;
 import com.matrimony.user.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,4 +73,10 @@ public class UserProfileService {
         profile.setStatus(status);
         log.info("Profile status updated userId={}, status={}", userId, status);
     }
+
+    @Transactional
+    public Page<UserProfile> findAll(Specification<UserProfile> spec, Pageable pageable) {
+      return  profileRepository.findAll(spec, pageable);
+    }
+
 }

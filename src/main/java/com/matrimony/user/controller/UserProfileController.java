@@ -26,7 +26,7 @@ public class UserProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveProfile(@AuthenticationPrincipal CustomUserDetails user, @RequestBody UserProfileRequest request) {
+    public ResponseEntity<String> saveProfile(@AuthenticationPrincipal CustomUserDetails user, @RequestBody UserProfileRequest request) {
         profileService.createOrUpdateProfile(user.getUserId(), request);
         return ResponseEntity.ok("Profile saved successfully");
     }
