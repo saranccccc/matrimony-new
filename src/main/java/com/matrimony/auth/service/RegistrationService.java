@@ -20,16 +20,18 @@ public class RegistrationService {
     private final OtpService otpService;
 
     @Transactional
-    public void registerUser(RegisterRequest req) {
+    public String registerUser(RegisterRequest req) {
         log.info("1. Save user details");
         UserDto dto = authService.register(req.getFirstName(), req.getLastName(), req.getMobileNo(), req.getEmail(), req.getPassword());
 
         log.info("2. Send OTP to SMS and to email if provided");
-        otpService.generateAndSaveOtp(dto.getUserId(), OtpChannel.SMS, req.getMobileNo());
+      String res=  otpService.generateAndSaveOtp(dto.getUserId(), OtpChannel.SMS, req.getMobileNo());
         if (null != req.getEmail()) {
-            otpService.generateAndSaveOtp(dto.getUserId(), OtpChannel.EMAIL, req.getEmail());
+            res = res +" " + otpService.generateAndSaveOtp(dto.getUserId(), OtpChannel.EMAIL, req.getEmail());
         }
         log.info("Registration done - User id:{}, Profile Id:{}", dto.getUserId(), dto.getProfileId());
+        return res;
+
     }
 
     public void verifyOtp(OtpVerifyRequest request) {

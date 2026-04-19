@@ -1,5 +1,6 @@
 package com.matrimony.chat.service;
 
+import com.matrimony.auth.service.UserValidationService;
 import com.matrimony.chat.entity.Conversation;
 import com.matrimony.chat.entity.Message;
 import com.matrimony.chat.repository.ConversationRepository;
@@ -21,17 +22,15 @@ public class ChatService {
     private final ConversationRepository conversationRepository;
     private final MessageRepository messageRepository;
     private final InterestRepository interestRepository;
-
+    private final UserValidationService userValidationService;
     @Transactional
-    public Conversation getOrCreateConversation(String userA, String userB) {
-
-        String user1 = userA.compareTo(userB) < 0 ? userA : userB;
-        String user2 = userA.compareTo(userB) < 0 ? userB : userA;
-// todo dont send message to blocked user - if (user.getProfileStatus() != ProfileStatus.APPROVED) {
-//    throw new RuntimeException("Profile not approved");
-//}
+    public Conversation getOrCreateConversation(String senderId, String receiverId) {
+        userValidationService.validateUser(senderId);
+        userValidationService.validateUser(receiverId);
+        String user1 = senderId.compareTo(receiverId) < 0 ? senderId : receiverId;
+        String user2 = senderId.compareTo(receiverId) < 0 ? receiverId : senderId;
         return conversationRepository.findByUser1IdAndUser2Id(user1, user2).orElseGet(() -> {
-            validateInterestAccepted(userA, userB);
+            validateInterestAccepted(senderId, receiverId);
             Conversation conversation = Conversation.builder().user1Id(user1).user2Id(user2).isBlocked(false).build();
             return conversationRepository.save(conversation);
         });

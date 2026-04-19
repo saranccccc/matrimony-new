@@ -1,16 +1,11 @@
 package com.matrimony.interest.service;
 
-import com.matrimony.admin.service.UserService;
-import com.matrimony.auth.entity.User;
-import com.matrimony.auth.entity.UserStatus;
+import com.matrimony.auth.service.UserValidationService;
 import com.matrimony.common.exception.CustomException;
 import com.matrimony.common.exception.ErrorCode;
 import com.matrimony.interest.dto.InterestStatus;
 import com.matrimony.interest.entity.Interest;
 import com.matrimony.interest.repository.InterestRepository;
-import com.matrimony.user.dto.ProfileStatus;
-import com.matrimony.user.dto.UserProfileResponse;
-import com.matrimony.user.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,13 +19,12 @@ import java.util.Optional;
 public class InterestService {
 
     private final InterestRepository interestRepository;
-    private final UserService userService;
-    private final UserProfileService userProfileService;
-
+    private final UserValidationService userValidationService;
     @Transactional
     public void sendInterest(String senderId, String receiverId) {
-        validateUser(senderId);
-        validateUser(receiverId);
+        userValidationService.validateUser(senderId);
+        userValidationService.validateUser(receiverId);
+
         if (senderId.equals(receiverId)) {
             throw new CustomException(ErrorCode.INVALID_OPERATION);
         }
@@ -46,17 +40,6 @@ public class InterestService {
         interestRepository.save(interest);
     }
 
-    private void validateUser(String senderId) {
-        User user = userService.getUser(senderId);
-        if (UserStatus.ACTIVE != user.getUserStatus()) {
-            throw new CustomException(ErrorCode.USER_NOT_ACTIVE);
-        }
-        UserProfileResponse userProfileResponse = userProfileService.getProfile(senderId);
-        if (ProfileStatus.APPROVED != userProfileResponse.getStatus()) {
-            throw new CustomException(ErrorCode.PROFILE_NOT_APPROVED);
-        }
-    }
-
     @Transactional
     public void respondToInterest(Long interestId, String receiverId, InterestStatus status) {
         Interest interest = interestRepository.findById(interestId).orElseThrow(() -> new CustomException(ErrorCode.INTEREST_NOT_FOUND));
@@ -65,6 +48,7 @@ public class InterestService {
         }
 
         if (interest.getStatus() != InterestStatus.PENDING) {
+            // todo interest already accepted
             throw new CustomException(ErrorCode.INVALID_OPERATION);
         }
 

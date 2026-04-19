@@ -27,7 +27,7 @@ public class OtpServiceImpl implements OtpService {
 
     @Override
     @Transactional
-    public void generateAndSaveOtp(String userId, OtpChannel OtpChannel, String destination) {
+    public String generateAndSaveOtp(String userId, OtpChannel OtpChannel, String destination) {
 
         log.info("1. Expire previous ACTIVE OTP");
         otpRepository.expirePreviousActiveOtps(userId, OtpChannel);
@@ -50,10 +50,10 @@ public class OtpServiceImpl implements OtpService {
                 .build();
 
         otpRepository.save(entity);
-
         log.info("4. Send OTP via Service Provider");
         // TODO: Integrate SMS provider here
         log.info("OTP Generated ----  UserId:{} Channel:{} OTP:{}", userId, OtpChannel, rawOtp);
+        return "userId:"+userId+", Channel:"+OtpChannel+" ,OTP:"+rawOtp;
     }
 
     @Transactional(noRollbackFor = CustomException.class)

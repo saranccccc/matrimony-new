@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserValidationService {
     private final UserProfileService userProfileService;
     private final UserService userService;
-    public void validateUser(String userId){
+    public boolean validateUser(String userId){
         User user=userService.getUser(userId);
         if (user.getUserStatus() == null || user.getUserStatus() != UserStatus.ACTIVE) {
             throw new CustomException(ErrorCode.USER_NOT_ACTIVE);
@@ -25,5 +25,6 @@ public class UserValidationService {
         if (profile.getStatus() == null || ProfileStatus.APPROVED != profile.getStatus()) {
             throw new CustomException(ErrorCode.PROFILE_NOT_APPROVED);
         }
+        return true;
     }
 }

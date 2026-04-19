@@ -5,7 +5,7 @@ import com.matrimony.common.entity.OtpChannel;
 
 public interface OtpService {
 
-    void generateAndSaveOtp(String userId, OtpChannel channel, String destination);
+    String generateAndSaveOtp(String userId, OtpChannel channel, String destination);
 
     void verifyOtp(String userId, OtpChannel channel, String enteredOtp);
 
